@@ -1,0 +1,221 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/ag_controls_bng"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/ag_controls_startLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_startVehicleBtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/base_button_green"
+            android:onClick="startVehicle"
+            android:text="@string/ag_controls_startVehicleLbl"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_stopVehicleBtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/base_button_red"
+            android:onClick="stopVehicle"
+            android:text="@string/ag_controls_stopVehicleLbl"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ag_controls_hvaclayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_hvacOnBtn"
+            style="android:buttonStyle"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/ag_controls_hvacDialImg"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="7dp"
+            android:background="@android:color/transparent"
+            android:onClick="hvacOn"
+            android:text="@string/ag_controls_hvacOnLbl"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:visibility="visible" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_hvacOffBtn"
+            style="android:buttonStyle"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ag_controls_hvacDialImg"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="7dp"
+            android:background="@android:color/transparent"
+            android:text="@string/ag_controls_hvacOffLbl"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:visibility="visible"
+            android:onClick="hvacOff" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_climateUpBtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/ag_controls_hvacDialImg"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="85dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_controls_climateUpLbl"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_climateDownBtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ag_controls_hvacDialImg"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="85dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_controls_climateDownLbl"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_lightingBtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="435dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_controls_lightingLbl"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_controls_lightingOffBtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="435dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_controls_lightingOffLbl"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/ag_controls_hvacDialImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="false"
+            android:layout_marginLeft="77dp"
+            android:layout_marginTop="106dp"
+            android:contentDescription="@string/ag_controls_hvacDialLbl"
+            android:src="@drawable/ag_controls_15" />
+
+        <TextView
+            android:id="@+id/ag_controls_hvacTempLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ag_controls_hvacDialImg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="58dp"
+            android:text="@string/ag_controls_tempLbl"
+            android:textSize="42sp" />
+
+        <ImageView
+            android:id="@+id/ag_controls_hvacStateImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/ag_controls_climateDownBtn"
+            android:layout_alignTop="@+id/ag_controls_hvacDialImg"
+            android:contentDescription="@string/ag_controls_hvacStateLbl"
+            android:src="@drawable/ag_controls_power_off" />
+
+    </RelativeLayout>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_locationBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="-2dp"
+        android:onClick="ag_locationActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent"/>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_controlsBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="70dp"
+        android:onClick="ag_controlsActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent"/>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_securityBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="141dp"
+        android:onClick="ag_securityActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent"/>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_alertsBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="215dp"
+        android:onClick="ag_alertsActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent" />
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_settingsBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="286dp"
+        android:onClick="ag_settingsActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent" />
+
+</RelativeLayout>

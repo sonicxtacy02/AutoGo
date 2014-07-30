@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dp" >
+    <ImageView android:id="@+id/ag_notification_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp" />
+    <TextView android:id="@+id/ag_notification_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ag_notification_icon"
+        style="Custom Notification Title" />
+    <TextView android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ag_notification_icon"
+        android:layout_below="@id/ag_notification_title"
+        style="Custom Notification Text" />
+
+    <!--
+    <Button
+        android:id="@+id/ag_notification_armStateBtn"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/ic_unarmed"
+        />
+
+    <Button
+        android:id="@+id/ag_notification_startStateBtn"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/ic_stop"
+        />
+        -->
+    <ImageView
+    android:id="@+id/ag_notification_armStateImg"
+    android:layout_width="36dp"
+    android:layout_height="36dp"
+    android:layout_alignParentRight="true"
+    android:layout_marginRight="50dp"
+    android:layout_marginTop="5dp"
+    android:src="@drawable/ic_armed" />
+
+    <ImageView
+        android:id="@+id/ag_notification_startStateImg"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_start" />
+</RelativeLayout>

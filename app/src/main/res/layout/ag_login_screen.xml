@@ -1,0 +1,120 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bng"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/ag_loginscreen_instructionLbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:fontFamily="Roboto"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:text="@string/ag_loginscreen_instructionLbl"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="normal" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="200dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/Testbutton1"
+                style="@drawable/base_button_white"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/base_button"
+                android:text="Test 1"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/Testbutton2"
+                style="@drawable/base_button_white"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/base_button"
+                android:text="Test 2"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/Testbutton3"
+                style="@drawable/base_button_white"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/base_button"
+                android:text="Test 3"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/Testbutton4"
+                style="@drawable/base_button_white"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/base_button"
+                android:text="Test 4"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/Testbutton5"
+                style="@drawable/base_button_white"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/base_button"
+                android:text="Test 5"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button1"
+        style="@drawable/base_button_white"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_horizontal"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/base_button_white"
+        android:text="@string/ag_loginscreen_selectVehicleProfileLbl" />
+
+    <Button
+        android:id="@+id/button2"
+        style="@drawable/base_button_white"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/base_button_white"
+        android:text="@string/ag_loginscreen_addVehicleProfileLbl" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+    </LinearLayout>
+
+</LinearLayout>

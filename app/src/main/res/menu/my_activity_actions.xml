@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Search, should appear as action button -->
+    <item android:id="@+id/action_arm"
+        android:icon="@drawable/ic_armed"
+        android:title="@string/action_arm"
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_disarm"
+        android:icon="@drawable/ic_unarmed"
+        android:title="@string/action_unarm"
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_start"
+        android:icon="@drawable/ic_start"
+        android:title="@string/action_start"
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_stop"
+        android:icon="@drawable/ic_stop"
+        android:title="@string/action_stop"
+        android:showAsAction="ifRoom" />
+
+</menu>

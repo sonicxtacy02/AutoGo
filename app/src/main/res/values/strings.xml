@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AutoGo</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="ag_loginscreen_instructionLbl">Available Vehicle Profiles</string>
+    <string name="ag_loginscreen_selectVehicleProfileLbl">Select Vehicle Profile</string>
+    <string name="ag_loginscreen_addVehicleProfileLbl">Add Vehicle Profile</string>
+    <string name="ag_security_lockDoorsLbl">Lock Doors</string>
+    <string name="ag_security_unlockDoorsLbl">Unlock Doors</string>
+    <string name="ag_security_armVehicleLbl">Arm Vehicle</string>
+    <string name="ag_security_disarmVehicleLbl">   Disarm Vehicle</string>
+    <string name="ag_security_lastUpdateLbl">Last Command:</string>
+    <string name="edit_message">Enter A Message</string>
+    <string name="button_send">Send</string>
+    <string name="ag_security_title">AutoGo Security</string>
+    <string name="ag_security_armcommand">ARM</string>
+    <string name="ag_security_disarmcommand">DISARM</string>
+    <string name="ag_security_shutdowncommand">Shutdown</string>
+    <string name="ag_security_restorecommand">Restore</string>
+    <string name="ag_security_armedStateLbl">Vehicle Armed State Indicator</string>
+    <string name="ag_security_windowsDownLbl">Windows Down</string>
+    <string name="ag_security_windowsUpLbl">Windows Up</string>
+    <string name="ag_controls_lightingLbl">Lights On</string>
+    <string name="ag_controls_lightingOffLbl">Lights Off</string>
+    <string name="ag_controls_climateUpLbl">Temp Up</string>
+    <string name="ag_controls_climateDownLbl">Temp Down</string>
+    <string name="ag_controls_startVehicleLbl">Engine Start</string>
+    <string name="ag_controls_stopVehicleLbl">Engine Stop</string>
+    <string name="ag_controls_hvacOffLbl">HVAC Off</string>
+    <string name="ag_controls_hvacOnLbl">HVAC On</string>
+    <string name="ag_controls_title">AutoGo Controls</string>
+    <string name="ag_controls_hvacDialLbl">HVAC Dial Indicator</string>
+    <string name="ag_controls_tempLbl">100°</string>
+    <string name="ag_controls_hvacStateLbl">HVAC Power State</string>
+
+    <string name="ag_goToSecurityLbl">Security</string>
+    <string name="ag_goToControlsLbl">Controls</string>
+
+
+
+
+
+
+
+    <string name="dummy_section_text">Section %1d is just a dummy section.</string>
+
+    <string name="stop_engine">Stop Engine</string>
+    <string name="start_engine">Start Engine</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_display_message">My Message</string>
+    <string name="action_search">Search</string>
+    <string name="action_arm">Arm</string>
+    <string name="action_unarm">Unarm</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="action_locate">Locate</string>
+    <string name="setting_start">IsRunning</string>
+    <string name="setting_lock">IsLocked</string>
+    <string name="setting_arm">IsArmed</string>
+    <string name="protection_status_message">Protection Status Is</string>
+    <string name="protection_state_active">Active</string>
+    <string name="protection_state_inactive">Inactive</string>
+    <string name="setting_hvacOn">IsHVACOn</string>
+
+</resources>

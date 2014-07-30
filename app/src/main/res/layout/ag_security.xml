@@ -1,0 +1,189 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bng"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/ag_security_armlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ArmVehicle"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/base_button_green"
+            android:onClick="ArmVehicle"
+            android:text="@string/ag_security_armVehicleLbl"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/DisarmVehicle"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/base_button_red"
+            android:onClick="DisarmVehicle"
+            android:text="@string/ag_security_disarmVehicleLbl"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ag_security_armstatelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/armStateImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="110dp"
+            android:contentDescription="@string/ag_security_armedStateLbl"
+            android:src="@drawable/unarmed" />
+
+        <TextView
+            android:id="@+id/lastUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/armStateImg"
+            android:layout_marginTop="30dp"
+            android:text="@string/ag_security_lastUpdateLbl"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+
+            android:id="@+id/ag_security_windowsupbtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/armStateImg"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="85dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_security_windowsUpLbl"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+
+            android:id="@+id/ag_security_windowsdownbtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/armStateImg"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="85dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_security_windowsUpLbl"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+            android:id="@+id/ag_security_shutdownbtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="435dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_security_shutdowncommand"
+            android:textSize="14sp" />
+
+        <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+
+            android:id="@+id/ag_security_restorebtn"
+            style="android:buttonStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="435dp"
+            android:background="@drawable/base_button_white"
+            android:text="@string/ag_security_restorecommand"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/lastCommandAndStamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/lastUpdate"
+            android:layout_alignBottom="@+id/lastUpdate"
+            android:layout_toRightOf="@+id/lastUpdate"
+            android:padding="10dp"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_locationBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="-2dp"
+        android:onClick="ag_locationActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent" />
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_controlsBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="70dp"
+        android:onClick="ag_controlsActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent"/>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_securityBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="141dp"
+        android:onClick="ag_securityActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent"/>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_alertsBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="215dp"
+        android:onClick="ag_alertsActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent"/>
+
+    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
+        android:id="@+id/ag_main_settingsBtn"
+        style="android:buttonStyle"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="286dp"
+        android:onClick="ag_settingsActivity"
+        android:visibility="visible"
+        android:background="@android:color/transparent" />
+
+</RelativeLayout>
