@@ -63,5 +63,6 @@
     <string name="protection_state_active">Active</string>
     <string name="protection_state_inactive">Inactive</string>
     <string name="setting_hvacOn">IsHVACOn</string>
+    <string name="ag_location_title">Vehicle Location</string>
 
 </resources>

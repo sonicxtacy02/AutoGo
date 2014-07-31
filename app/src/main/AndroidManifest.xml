@@ -7,6 +7,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name=".MyActivity"
             android:label="@string/app_name" >
@@ -34,9 +35,25 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
         </activity>
-
+        <activity
+            android:name=".AutoGoLocation"
+            android:label="@string/ag_location_title"
+            android:parentActivityName=".MyActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+        </activity>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyC1ie273hU01kYjVz1dk4YYettGt2_Wc3Y"/>
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="myapp.permission.MAPS_RECEIVE"/>
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+        <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+        <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+        <uses-library android:name="com.google.android.maps"/>
         <receiver android:name="AutoGoArmStateNotification" />
         <receiver android:name="AutoGoStartStateNotification" />
+
     </application>
 
 </manifest>
