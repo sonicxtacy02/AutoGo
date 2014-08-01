@@ -203,7 +203,7 @@ public class AutoGoSecurity extends Activity {
 
     public void ArmVehicle(View view) {
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
-        img.setImageResource(R.drawable.locked);
+        img.setImageResource(R.drawable.armed);
         MyActivity.isArmed=true;
         MyActivity.LastCommand = "ARM";
         final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
@@ -217,7 +217,7 @@ public class AutoGoSecurity extends Activity {
 
     public void DisarmVehicle(View view){
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
-        img.setImageResource(R.drawable.unlocked);
+        img.setImageResource(R.drawable.unarmed);
         MyActivity.isArmed=false;
         MyActivity.LastCommand = "DISARM";
         final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);

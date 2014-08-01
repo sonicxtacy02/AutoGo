@@ -4,7 +4,7 @@ package com.soniquesoftwaredesign.sx14r.autogo;
 import java.text.DateFormat;
 import java.util.Calendar;
 //import java.util.Date;
-
+import android.location.Criteria;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Activity;
@@ -28,9 +28,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AutoGoLocation extends Activity {
-
+    private GoogleMap googleMap;
 
 
 
@@ -47,7 +57,7 @@ public class AutoGoLocation extends Activity {
 
         textView.setText(message);
 
-        setContentView(R.layout.ag_security);
+        setContentView(R.layout.ag_location);
         // Show the Up button in the action bar.
         setupActionBar();
 
@@ -70,12 +80,12 @@ public class AutoGoLocation extends Activity {
                     case R.id.armStateImg:
                         if(MyActivity.isArmed==false)
                         {
-                            ArmVehicle(v);
+                            //ArmVehicle(v);
 
 
                         }else if(MyActivity.isArmed==true)
                         {
-                            DisarmVehicle(v);
+                            //DisarmVehicle(v);
                         }
 
                         MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
@@ -87,9 +97,39 @@ public class AutoGoLocation extends Activity {
             }
 
         });
+
+        try {
+            // Loading map
+            initializeMap();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
+    /**
+     * function to load map. If map is not created it will create it for you
+     * */
+    private void initializeMap() {
+        if (googleMap == null) {
+            googleMap = ((MapFragment) getFragmentManager().findFragmentById(
+                    R.id.map)).getMap();
 
+            // check if map is created successfully or not
+            if (googleMap == null) {
+                Toast.makeText(getApplicationContext(),
+                        "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializeMap();
+    }
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -201,33 +241,9 @@ public class AutoGoLocation extends Activity {
 
 
 
-    public void ArmVehicle(View view) {
-        ImageView img = (ImageView) findViewById(R.id.armStateImg);
-        img.setImageResource(R.drawable.locked);
-        MyActivity.isArmed=true;
-        MyActivity.LastCommand = "ARM";
-        final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
-        mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ArmVehicle);
-        btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.DisarmVehicle);
-        btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_arm), true);
-    }
 
-    public void DisarmVehicle(View view){
-        ImageView img = (ImageView) findViewById(R.id.armStateImg);
-        img.setImageResource(R.drawable.unlocked);
-        MyActivity.isArmed=false;
-        MyActivity.LastCommand = "DISARM";
-        final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
-        mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.DisarmVehicle);
-        btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.ArmVehicle);
-        btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_arm), false);
-    }
+
+
 
     public void ag_securityActivity (View view)
     {
