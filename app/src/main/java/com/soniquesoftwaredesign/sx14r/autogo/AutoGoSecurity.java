@@ -78,9 +78,7 @@ public class AutoGoSecurity extends Activity {
                             DisarmVehicle(v);
                         }
 
-                        MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                        TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-                        tv.setText(MyActivity.LastCommand + " " + "@ " + MyActivity.LastCommandStamp);
+                     
                         break;
                 }
 
@@ -213,6 +211,10 @@ public class AutoGoSecurity extends Activity {
         btn = (SAutoBgButton) findViewById(R.id.DisarmVehicle);
         btn.setEnabled(true);
         SaveSetting(getResources().getString(R.string.setting_arm), true);
+
+        MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+        tv.setText(MyActivity.LastCommand + " " + "@ " + MyActivity.LastCommandStamp);
     }
 
     public void DisarmVehicle(View view){
@@ -227,6 +229,10 @@ public class AutoGoSecurity extends Activity {
         btn = (SAutoBgButton) findViewById(R.id.ArmVehicle);
         btn.setEnabled(true);
         SaveSetting(getResources().getString(R.string.setting_arm), false);
+
+        MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+        tv.setText(MyActivity.LastCommand + " " + "@ " + MyActivity.LastCommandStamp);
     }
 
     public void ag_securityActivity (View view)
@@ -383,6 +389,66 @@ public class AutoGoSecurity extends Activity {
         UpdateNotifier();
     }
 
+    public void goToSecurity (View view)
+    {
+        try {
+            Intent intent = new Intent(this, AutoGoSecurity.class);
+
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
+
+            //String message = editText.getText().toString();
+
+            //intent.putExtra(EXTRA_MESSAGE, message);
+            SaveStringSetting("lastScreen", "security");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void goToLocation (View view)
+    {
+        try {
+            Intent intent = new Intent(this, AutoGoLocation.class);
+
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
+
+            //String message = editText.getText().toString();
+
+            //intent.putExtra(EXTRA_MESSAGE, message);
+            SaveStringSetting("lastScreen", "location");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void goToControls (View view)
+    {
+        Intent intent = new Intent(this, AutoGoControls.class);
+
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+
+        //String message = editText.getText().toString();
+
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        SaveStringSetting("lastScreen", "controls");
+        startActivity(intent);
+    }
+
+    public void goToAlerts(View view) {
+    }
+
+    public void goToSettings(View view) {
+    }
+
+    public void SaveStringSetting(String keyValue, String savedValue){
+        //write the last action to setting file
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(keyValue, savedValue);
+        editor.commit();
+    }
 
 }
 
