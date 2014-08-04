@@ -64,5 +64,14 @@
     <string name="protection_state_inactive">Inactive</string>
     <string name="setting_hvacOn">IsHVACOn</string>
     <string name="ag_location_title">Vehicle Location</string>
+    <string name="ag_goToLocationLbl">Location</string>
+    <string name="ag_location_vehiclestatusLbl">Vehicle Status:</string>
+    <string name="ag_location_geofencing">Geofencing</string>
+    <string name="ag_location_addresslbl">Nearby Address: Unknown</string>
+    <string name="ag_location_speedlbl">N/A</string>
+    <string name="ag_location_altlbl">N/A</string>
+    <string name="ag_location_headinglbl">N/A</string>
+    <string name="ag_location_voltlbl">N/A</string>
+    <string name="setting_lastScreen">security</string>
 
 </resources>

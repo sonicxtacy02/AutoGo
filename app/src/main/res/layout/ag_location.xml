@@ -61,23 +61,14 @@
 
         />
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ag_location_nearby_addesslbl"
-            android:textSize="14sp"
-            android:textColor="#ffffff"
-            android:layout_marginTop="350dp"
-            android:layout_marginLeft="25dp"
-            android:paddingBottom="2dp"
-            />
-        <TextView
+            android:id="@+id/ag_location_nearAddress"
             android:layout_width="335dp"
             android:layout_height="wrap_content"
             android:text="@string/ag_location_addresslbl"
             android:textSize="16sp"
             android:textColor="#ffffff"
-            android:layout_marginTop="364dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginTop="345dp"
+            android:layout_marginLeft="18dp"
             android:paddingBottom="2dp"
             />
 
@@ -123,6 +114,7 @@
             />
 
         <TextView
+            android:id="@+id/ag_location_distanceAway"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:text=" Miles Away"

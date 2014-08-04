@@ -23,9 +23,7 @@ import android.widget.RemoteViews;
 
 //public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
-public class MyActivity extends Activity{
-
-
+public class MyActivity extends Activity {
 
 
     public int mId;
@@ -34,46 +32,51 @@ public class MyActivity extends Activity{
     public static Boolean isHVACOn;
     public static String LastCommand;
     public static String LastCommandStamp;
+    public static String lastScreen;
 
     public final static String EXTRA_MESSAGE = "com.soniquesoftwaredesign.sx14r.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
-
-
-
-
-
         //get saved settings
         isStarted = GetSetting(getResources().getString(R.string.setting_start));
         isArmed = GetSetting(getResources().getString(R.string.setting_arm));
         isHVACOn = GetSetting(getResources().getString(R.string.setting_hvacOn));
+        lastScreen = GetStringSetting(getResources().getString(R.string.setting_lastScreen));
+        if (lastScreen == null || lastScreen == "null") {
+            //first run
+            lastScreen = "security";
+            SaveStringSetting("lastScreen", lastScreen);
+            setContentView(R.layout.ag_security);
+        } else if (lastScreen == "security") {
+            setContentView(R.layout.ag_security);
+        } else if (lastScreen == "controls") {
+            setContentView(R.layout.ag_controls);
+        } else if (lastScreen == "location") {
+            setContentView(R.layout.ag_location);
+        }
+
 
         int icon = R.drawable.ic_launcher;
         long when = System.currentTimeMillis();
         Notification notification = new Notification(icon, getResources().getString(R.string.app_name), when);
 
-        NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.ag_custom_notification);
         contentView.setImageViewResource(R.id.ag_notification_icon, R.drawable.ic_launcher);
         contentView.setTextViewText(R.id.ag_notification_title, getResources().getString(R.string.app_name));
-        if(isStarted==true)
-        {
+        if (isStarted == true) {
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_start);
-        }else
-        {
+        } else {
 
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_stop);
         }
-        if(isArmed==true)
-        {
-            contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " +  getResources().getString(R.string.protection_state_active) );
+        if (isArmed == true) {
+            contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " + getResources().getString(R.string.protection_state_active));
             contentView.setImageViewResource(R.id.ag_notification_armStateImg, R.drawable.ic_armed);
-        }else
-        {
+        } else {
             contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " + getResources().getString(R.string.protection_state_inactive));
             contentView.setImageViewResource(R.id.ag_notification_armStateImg, R.drawable.ic_unarmed);
         }
@@ -89,39 +92,18 @@ public class MyActivity extends Activity{
         //notification.defaults |= Notification.DEFAULT_SOUND; // Sound
 
 
-        Intent armStateIntent = new Intent(this,AutoGoArmStateNotification.class);
-        PendingIntent pendingArmStateIntent = PendingIntent.getBroadcast(this,0,armStateIntent,0);
+        Intent armStateIntent = new Intent(this, AutoGoArmStateNotification.class);
+        PendingIntent pendingArmStateIntent = PendingIntent.getBroadcast(this, 0, armStateIntent, 0);
 
         //contentView.setOnClickPendingIntent(R.id.ag_notification_armStateBtn, pendingArmStateIntent);
 
-        Intent startStateIntent = new Intent(this,AutoGoStartStateNotification.class);
-        PendingIntent pendingStartStateIntent = PendingIntent.getBroadcast(this,0,startStateIntent,0);
+        Intent startStateIntent = new Intent(this, AutoGoStartStateNotification.class);
+        PendingIntent pendingStartStateIntent = PendingIntent.getBroadcast(this, 0, startStateIntent, 0);
 
         //contentView.setOnClickPendingIntent(R.id.ag_notification_startStateBtn, pendingStartStateIntent);
 
 
         mNotificationManager.notify(1, notification);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         //set up notification
@@ -150,11 +132,11 @@ public class MyActivity extends Activity{
         String message = "";
         switch (item.getItemId()) {
             case R.id.action_disarm:
-                isArmed= false;
+                isArmed = false;
                 message = "arm state has been changed to " + isArmed.toString();
                 //message = getResources().getString(R.string.action_unlock);
 
-                SaveSetting(getResources().getString(R.string.setting_arm),false);
+                SaveSetting(getResources().getString(R.string.setting_arm), false);
                 final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
                 mp1.start();
                 DisplayResponse(message);
@@ -169,7 +151,7 @@ public class MyActivity extends Activity{
                 isArmed = true;
                 message = "arm state has been changed to " + isArmed.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_arm),true);
+                SaveSetting(getResources().getString(R.string.setting_arm), true);
                 final MediaPlayer mp4 = MediaPlayer.create(getBaseContext(), R.raw.lock);
                 mp4.start();
                 DisplayResponse(message);
@@ -184,7 +166,7 @@ public class MyActivity extends Activity{
                 isStarted = true;
                 message = "engine running state has been changed to " + isStarted.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_start),true);
+                SaveSetting(getResources().getString(R.string.setting_start), true);
                 final MediaPlayer mp3 = MediaPlayer.create(getBaseContext(), R.raw.start);
                 mp3.start();
                 DisplayResponse(message);
@@ -197,7 +179,7 @@ public class MyActivity extends Activity{
                 isStarted = false;
                 message = "engine running state has been changed to " + isStarted.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_start),false);
+                SaveSetting(getResources().getString(R.string.setting_start), false);
                 final MediaPlayer mp2 = MediaPlayer.create(getBaseContext(), R.raw.stop);
                 mp2.start();
                 DisplayResponse(message);
@@ -214,27 +196,39 @@ public class MyActivity extends Activity{
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if(isArmed)
-        {
+        if (isArmed) {
             menu.findItem(R.id.action_arm).setVisible(false);
-        }
-        else
-        {
+        } else {
             menu.findItem(R.id.action_disarm).setVisible(false);
         }
-        if(isStarted)
-        {
+        if (isStarted) {
             menu.findItem(R.id.action_start).setVisible(false);
-        }
-        else
-        {
+        } else {
             menu.findItem(R.id.action_stop).setVisible(false);
         }
 
 
-
         return true;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        lastScreen = GetStringSetting("lastScreen");
+        if (lastScreen == null || lastScreen == "null") {
+            //first run
+            lastScreen = "security";
+            SaveStringSetting("lastScreen", lastScreen);
+            setContentView(R.layout.ag_security);
+        } else if (lastScreen == "security") {
+            setContentView(R.layout.ag_security);
+        } else if (lastScreen == "controls") {
+            setContentView(R.layout.ag_controls);
+        } else if (lastScreen == "location") {
+            setContentView(R.layout.ag_location);
+        }
+    }
+
 
 
     public Boolean GetSetting(String keyValue){
@@ -242,6 +236,14 @@ public class MyActivity extends Activity{
         Boolean ResultValue = false;
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         ResultValue = sharedPref.getBoolean(keyValue, false);
+        return ResultValue;
+    }
+
+    public String GetStringSetting(String keyValue){
+        //set a Default Value
+        String ResultValue;
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        ResultValue = sharedPref.getString(keyValue, "null");
         return ResultValue;
     }
 
@@ -369,6 +371,14 @@ public class MyActivity extends Activity{
         UpdateNotifier();
     }
 
+    public void SaveStringSetting(String keyValue, String savedValue){
+        //write the last action to setting file
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(keyValue, savedValue);
+        editor.commit();
+    }
+
 
     public void goToSecurity (View view)
     {
@@ -380,7 +390,24 @@ public class MyActivity extends Activity{
             //String message = editText.getText().toString();
 
             //intent.putExtra(EXTRA_MESSAGE, message);
+            SaveStringSetting("lastScreen", "security");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void goToLocation (View view)
+    {
+        try {
+            Intent intent = new Intent(this, AutoGoLocation.class);
+
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
+
+            //String message = editText.getText().toString();
+
+            //intent.putExtra(EXTRA_MESSAGE, message);
+            SaveStringSetting("lastScreen", "location");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -396,14 +423,15 @@ public class MyActivity extends Activity{
         //String message = editText.getText().toString();
 
         //intent.putExtra(EXTRA_MESSAGE, message);
-
+        SaveStringSetting("lastScreen", "controls");
         startActivity(intent);
     }
 
 
+    public void goToAlerts(View view) {
+    }
 
-
-
-
+    public void goToSettings(View view) {
+    }
 }
 

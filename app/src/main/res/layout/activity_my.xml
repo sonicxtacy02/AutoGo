@@ -24,6 +24,13 @@
         android:text="@string/ag_goToControlsLbl"
         android:onClick="goToControls" />
 
+    <Button
+        android:id="@+id/goToLocationCmd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ag_goToLocationLbl"
+        android:onClick="goToLocation" />
+
     <EditText android:id="@+id/edit_message"
         android:layout_weight="1"
         android:layout_width="0dp"

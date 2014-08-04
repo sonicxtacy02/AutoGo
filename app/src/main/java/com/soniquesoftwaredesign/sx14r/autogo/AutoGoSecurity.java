@@ -78,7 +78,7 @@ public class AutoGoSecurity extends Activity {
                             DisarmVehicle(v);
                         }
 
-                     
+
                         break;
                 }
 

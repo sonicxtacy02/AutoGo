@@ -2,15 +2,41 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.soniquesoftwaredesign.sx14r.autogo" >
 
+
+    <!-- permissions -->
+    <permission android:name="com.soniquesoftwaredesign.sx14r.autogo.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.soniquesoftwaredesign.sx14r.autogo.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Required OpenGL ES 2.0. for Maps V2 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+    <uses-library android:name="com.google.android.maps"/>
+    <receiver android:name="AutoGoArmStateNotification" />
+    <receiver android:name="AutoGoStartStateNotification" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
+
+
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCvMl1rD1DiCIjzwkk41UMKCWGW2v-mdHI"/>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".MyActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +48,8 @@
         <activity
             android:name=".AutoGoSecurity"
             android:label="@string/ag_security_title"
-            android:parentActivityName=".MyActivity" >
+            android:parentActivityName=".MyActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
@@ -30,7 +57,8 @@
         <activity
             android:name=".AutoGoControls"
             android:label="@string/ag_controls_title"
-            android:parentActivityName=".MyActivity" >
+            android:parentActivityName=".MyActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
@@ -38,21 +66,13 @@
         <activity
             android:name=".AutoGoLocation"
             android:label="@string/ag_location_title"
-            android:parentActivityName=".MyActivity" >
+            android:parentActivityName=".MyActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
         </activity>
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyC1ie273hU01kYjVz1dk4YYettGt2_Wc3Y"/>
-        <uses-permission android:name="android.permission.INTERNET"/>
-        <uses-permission android:name="myapp.permission.MAPS_RECEIVE"/>
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-        <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-        <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
-        <uses-library android:name="com.google.android.maps"/>
-        <receiver android:name="AutoGoArmStateNotification" />
-        <receiver android:name="AutoGoStartStateNotification" />
+
 
     </application>
 

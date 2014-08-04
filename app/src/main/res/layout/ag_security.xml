@@ -186,4 +186,59 @@
         android:visibility="visible"
         android:background="@android:color/transparent" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom|center"
+            android:paddingTop="0dp"
+            android:id="@+id/ag_master_buttons"
+            android:src="@drawable/ag_master_buttons"
+
+
+            />
+
+        <Button
+            android:layout_width="78dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:visibility="visible"
+            android:onClick="goToLocation"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="72dp"
+            android:visibility="visible"
+            android:onClick="goToControls"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="142dp"
+            android:visibility="visible"
+            android:onClick="goToSecurity"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="214dp"
+            android:visibility="visible"
+            android:onClick="goToAlerts"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="284dp"
+            android:visibility="visible"
+            android:onClick="goToSettings"
+            android:alpha="0" />
+    </FrameLayout>
 </RelativeLayout>
