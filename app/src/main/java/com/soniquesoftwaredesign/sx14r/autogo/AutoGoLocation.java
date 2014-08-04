@@ -1,8 +1,11 @@
 package com.soniquesoftwaredesign.sx14r.autogo;
 
 //import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Locale;
 //import java.util.Date;
 import android.location.Criteria;
 import android.media.MediaPlayer;
@@ -18,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 //import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -32,15 +37,27 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.widget.Toast;
-
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.location.Address;
+import android.location.Geocoder;
+import java.util.List;
+
+
 public class AutoGoLocation extends Activity {
     private GoogleMap googleMap;
+    GPSTracker deviceGPS;
+    Location deviceLocation = new Location("Device Location");
+    // latitude and longitude
+    double latitude = 37.533;
+    double longitude = -77.467;
+
 
 
 
@@ -48,59 +65,14 @@ public class AutoGoLocation extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-
-        String message = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
-
-        TextView textView = new TextView(this);
-        textView.setTextSize(40);
-
-        textView.setText(message);
 
         setContentView(R.layout.ag_location);
-        // Show the Up button in the action bar.
-        setupActionBar();
 
-        //MyActivity.isStarted = GetSetting(getResources().getString(R.string.setting_start));
-        //isArmed = GetSetting(getResources().getString(R.string.setting_arm));
-        //isArmed = GetSetting(getResources().getString(R.string.setting_arm));
-        //isHVACOn = GetSetting(getResources().getString(R.string.setting_hvacOn));
-
-
-        ImageView img = (ImageView) findViewById(R.id.armStateImg);
-        img.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                //int a = 0;
-
-                switch (v.getId())
-                {
-                    case R.id.armStateImg:
-                        if(MyActivity.isArmed==false)
-                        {
-                            //ArmVehicle(v);
-
-
-                        }else if(MyActivity.isArmed==true)
-                        {
-                            //DisarmVehicle(v);
-                        }
-
-                        MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                        TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-                        tv.setText(MyActivity.LastCommand + " " + "@ " + MyActivity.LastCommandStamp);
-                        break;
-                }
-
-            }
-
-        });
 
         try {
             // Loading map
             initializeMap();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,6 +95,98 @@ public class AutoGoLocation extends Activity {
                         .show();
             }
         }
+
+        //hide zoom control
+        googleMap.getUiSettings().setZoomControlsEnabled(false);
+
+
+
+// create marker
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Hello Maps ");
+
+// adding marker
+        googleMap.addMarker(marker);
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(
+                new LatLng(latitude, longitude)).zoom(16).build();
+
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        GetDistanceDifference();
+
+        //geocode
+        GeoCodeAddress();
+
+
+    }
+
+    public void GeoCodeAddress(){
+        Geocoder geocoder = new Geocoder(this, Locale.ENGLISH);
+        TextView myAddress = new TextView(this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            if(addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("Nearby Address: ");
+                for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+
+
+
+                myAddress=(TextView)findViewById(R.id.ag_location_nearAddress);
+                myAddress.setText(strReturnedAddress.toString());
+
+            }
+            else{
+                myAddress.setText("No Address returned!");
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            myAddress.setText("Cannot get Address!");
+        }
+    }
+
+    public void GetDistanceDifference()
+    {
+        //get distance difference based on sent location
+        // create class object
+        deviceGPS = new GPSTracker(AutoGoLocation.this);
+
+        // check if GPS enabled
+        if(deviceGPS.canGetLocation()){
+
+            double deviceLatitude = deviceGPS.getLatitude();
+            double deviceLongitude = deviceGPS.getLongitude();
+            deviceLocation.setLatitude(deviceLatitude);
+            deviceLocation.setLongitude(deviceLongitude);
+
+            // \n is for new line
+            //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            deviceGPS.showSettingsAlert();
+        }
+
+        Location vehicleLocation = new Location("Vehicle Location");
+        vehicleLocation.setLatitude(latitude);
+        vehicleLocation.setLongitude(longitude);
+
+
+        if (vehicleLocation != null && deviceLocation !=null) {
+            float distance = vehicleLocation.distanceTo(deviceLocation);
+
+            //convert meters to miles
+            DecimalFormat dec = new DecimalFormat("###.##");
+            distance = ((float) (distance /1609.344));
+            TextView distanceAway = new TextView(this);
+            distanceAway=(TextView)findViewById(R.id.ag_location_distanceAway);
+            distanceAway.setText(dec.format(distance) + " Miles Away");
+        }
     }
 
     @Override
@@ -131,134 +195,43 @@ public class AutoGoLocation extends Activity {
         initializeMap();
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.my_activity_actions, menu);
-        return super.onCreateOptionsMenu(menu);
-        //return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        //create new intent that defines a new activity
-        //Intent intent = new Intent(this, DisplayMessageActivity.class);
-        String message = "";
-        switch (item.getItemId()) {
-            case R.id.action_disarm:
-                MyActivity.isArmed = false;
-                message = "arm state has been changed to " + MyActivity.isArmed.toString();
-                //message = getResources().getString(R.string.action_unlock);
-
-                SaveSetting(getResources().getString(R.string.setting_arm),false);
-                DisplayResponse(message);
-                //add the message to intent to pass data to the intent
-                //intent.putExtra(EXTRA_MESSAGE,message);
-                //go!
-                //startActivity(intent);
-                UpdateNotifier();
-                return true;
-            case R.id.action_arm:
-                //message = getResources().getString(R.string.action_lock);
-                MyActivity.isArmed = true;
-                message = "arm state has been changed to " + MyActivity.isArmed.toString();
-
-                SaveSetting(getResources().getString(R.string.setting_arm),true);
-                DisplayResponse(message);
-                //add the message to intent to pass data to the intent
-                //intent.putExtra(EXTRA_MESSAGE,message);
-                //go!
-                //startActivity(intent);
-                UpdateNotifier();
-                return true;
-            case R.id.action_start:
-                //message = getResources().getString(R.string.action_start);
-                MyActivity.isStarted = true;
-                message = "engine running state has been changed to " + MyActivity.isStarted.toString();
-
-                SaveSetting(getResources().getString(R.string.setting_start),true);
-                DisplayResponse(message);
-                //intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(intent);
-                UpdateNotifier();
-                return true;
-            case R.id.action_stop:
-                //message = getResources().getString(R.string.action_start);
-                MyActivity.isStarted = false;
-                message = "engine running state has been changed to " + MyActivity.isStarted.toString();
-
-                SaveSetting(getResources().getString(R.string.setting_start),false);
-                DisplayResponse(message);
-                UpdateNotifier();
-                //intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        if(MyActivity.isArmed)
-        {
-            menu.findItem(R.id.action_arm).setVisible(false);
-        }
-        else
-        {
-            menu.findItem(R.id.action_disarm).setVisible(false);
-        }
-        if(MyActivity.isStarted)
-        {
-            menu.findItem(R.id.action_start).setVisible(false);
-        }
-        else
-        {
-            menu.findItem(R.id.action_stop).setVisible(false);
-        }
-
-
-
-        return true;
-    }
-
-
-
-
-
-
-
-
-    public void ag_securityActivity (View view)
+    public void goToSecurity (View view)
     {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
+        try {
+            Intent intent = new Intent(this, AutoGoSecurity.class);
 
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
 
-        //String message = editText.getText().toString();
+            //String message = editText.getText().toString();
 
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+            //intent.putExtra(EXTRA_MESSAGE, message);
+            SaveStringSetting("lastScreen", "security");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void ag_controlsActivity (View view)
+    public void goToLocation (View view)
+    {
+        /**
+        try {
+            Intent intent = new Intent(this, AutoGoLocation.class);
+
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
+
+            //String message = editText.getText().toString();
+
+            //intent.putExtra(EXTRA_MESSAGE, message);
+            SaveStringSetting("lastScreen", "location");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         **/
+    }
+
+    public void goToControls (View view)
     {
         Intent intent = new Intent(this, AutoGoControls.class);
 
@@ -267,137 +240,45 @@ public class AutoGoLocation extends Activity {
         //String message = editText.getText().toString();
 
         //intent.putExtra(EXTRA_MESSAGE, message);
-
+        SaveStringSetting("lastScreen", "controls");
         startActivity(intent);
     }
 
-    public void ag_locationActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
 
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+    public void goToAlerts(View view) {
     }
 
-    public void ag_alertsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+    public void goToSettings(View view) {
     }
 
-    public void ag_settingsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
-    }
-
-    public void UpdateNotifier(){
-        int icon = R.drawable.ic_launcher;
-        long when = System.currentTimeMillis();
-        Notification notification = new Notification(icon, getResources().getString(R.string.app_name), when);
-
-        NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.ag_custom_notification);
-        contentView.setImageViewResource(R.id.ag_notification_icon, R.drawable.ic_launcher);
-        contentView.setTextViewText(R.id.ag_notification_title, getResources().getString(R.string.app_name));
-        if(MyActivity.isStarted==true)
-        {
-            contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_start);
-        }else
-        {
-
-            contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_stop);
-        }
-        if(MyActivity.isArmed==true)
-        {
-            contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " +  getResources().getString(R.string.protection_state_active) );
-            contentView.setImageViewResource(R.id.ag_notification_armStateImg, R.drawable.ic_armed);
-        }else
-        {
-            contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " + getResources().getString(R.string.protection_state_inactive));
-            contentView.setImageViewResource(R.id.ag_notification_armStateImg, R.drawable.ic_unarmed);
-        }
-        notification.contentView = contentView;
-
-        Intent notificationIntent = new Intent(this, MyActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.contentIntent = contentIntent;
-
-        notification.flags |= Notification.FLAG_NO_CLEAR; //Do not clear the notification
-        //notification.defaults |= Notification.DEFAULT_LIGHTS; // LED
-        //notification.defaults |= Notification.DEFAULT_VIBRATE; //Vibration
-        //notification.defaults |= Notification.DEFAULT_SOUND; // Sound
-
-
-        Intent armStateIntent = new Intent(this,AutoGoArmStateNotification.class);
-        PendingIntent pendingArmStateIntent = PendingIntent.getBroadcast(this,0,armStateIntent,0);
-
-        //contentView.setOnClickPendingIntent(R.id.ag_notification_armStateBtn, pendingArmStateIntent);
-
-        Intent startStateIntent = new Intent(this,AutoGoStartStateNotification.class);
-        PendingIntent pendingStartStateIntent = PendingIntent.getBroadcast(this,0,startStateIntent,0);
-
-        //contentView.setOnClickPendingIntent(R.id.ag_notification_startStateBtn, pendingStartStateIntent);
-
-
-        mNotificationManager.notify(1, notification);
-
-    }
-
-    public void DisplayResponse(String DisplayMessage)
-    {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage(DisplayMessage);
-        builder1.setCancelable(true);
-        builder1.setNeutralButton("Okay",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
-        this.invalidateOptionsMenu();
-    }
-
-    public Boolean GetSetting(String keyValue){
-        //set a Default Value
-        Boolean ResultValue = false;
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        ResultValue = sharedPref.getBoolean(keyValue, false);
-        return ResultValue;
-    }
-
-    public void SaveSetting(String keyValue, Boolean savedValue){
+    public void SaveStringSetting(String keyValue, String savedValue){
         //write the last action to setting file
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(keyValue, savedValue);
+        editor.putString(keyValue, savedValue);
         editor.commit();
-
-        UpdateNotifier();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
