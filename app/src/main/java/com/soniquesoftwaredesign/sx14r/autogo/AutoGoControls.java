@@ -41,23 +41,39 @@ public class AutoGoControls extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-
-        String message = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
-
-        TextView textView = new TextView(this);
-        textView.setTextSize(40);
-
-        textView.setText(message);
-
         setContentView(R.layout.ag_controls);
         // Show the Up button in the action bar.
         setupActionBar();
 
-        //MyActivity.isStarted = GetSetting(getResources().getString(R.string.setting_start));
-        //MyActivity.isArmed = GetSetting(getResources().getString(R.string.setting_arm));
-        //MyActivity.isHVACOn = GetSetting(getResources().getString(R.string.setting_hvacOn));
-
+        //set default button states
+        if(MyActivity.isStarted) {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
+            btn.setEnabled(false);
+        }
+        else {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
+            btn.setEnabled(true);
+        }
+        if(MyActivity.areLightsOn) {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
+            btn.setEnabled(false);
+        }
+        else {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
+            btn.setEnabled(true);
+        }
+        //set temp label from value
+        //recall last command
+        TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+        tv.setText(MyActivity.setTemp + "°");
 
     }
 
@@ -89,12 +105,12 @@ public class AutoGoControls extends Activity {
         //Intent intent = new Intent(this, DisplayMessageActivity.class);
         String message = "";
         switch (item.getItemId()) {
-            case R.id.action_disarm:
+            case R.id.action_unarm:
                 MyActivity.isArmed = false;
                 message = "arm state has been changed to " + MyActivity.isArmed.toString();
                 //message = getResources().getString(R.string.action_unlock);
 
-                SaveSetting(getResources().getString(R.string.setting_arm),false);
+                MyActivity.editor.putBoolean("isArmed", false).apply();
                 DisplayResponse(message);
                 //add the message to intent to pass data to the intent
                 //intent.putExtra(EXTRA_MESSAGE,message);
@@ -107,7 +123,7 @@ public class AutoGoControls extends Activity {
                 MyActivity.isArmed = true;
                 message = "arm state has been changed to " + MyActivity.isArmed.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_arm),true);
+                MyActivity.editor.putBoolean("isArmed", true).apply();
                 DisplayResponse(message);
                 //add the message to intent to pass data to the intent
                 //intent.putExtra(EXTRA_MESSAGE,message);
@@ -120,7 +136,7 @@ public class AutoGoControls extends Activity {
                 MyActivity.isStarted = true;
                 message = "engine running state has been changed to " + MyActivity.isStarted.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_start),true);
+                MyActivity.editor.putBoolean("isStarted", true).apply();
                 DisplayResponse(message);
                 //intent.putExtra(EXTRA_MESSAGE, message);
                 //startActivity(intent);
@@ -131,7 +147,7 @@ public class AutoGoControls extends Activity {
                 MyActivity.isStarted = false;
                 message = "engine running state has been changed to " + MyActivity.isStarted.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_start),false);
+                MyActivity.editor.putBoolean("isStarted", false).apply();
                 DisplayResponse(message);
                 UpdateNotifier();
                 //intent.putExtra(EXTRA_MESSAGE, message);
@@ -152,7 +168,7 @@ public class AutoGoControls extends Activity {
         }
         else
         {
-            menu.findItem(R.id.action_disarm).setVisible(false);
+            menu.findItem(R.id.action_unarm).setVisible(false);
         }
         if(MyActivity.isStarted)
         {
@@ -182,7 +198,9 @@ public class AutoGoControls extends Activity {
         btn.setEnabled(false);
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
         btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_start), true);
+        MyActivity.editor.putBoolean("isStarted", true).apply();
+
+        UpdateNotifier();
     }
 
     public void stopVehicle(View view){
@@ -195,7 +213,9 @@ public class AutoGoControls extends Activity {
         btn.setEnabled(false);
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
         btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_start), false);
+        MyActivity.editor.putBoolean("isStarted", false).apply();
+
+        UpdateNotifier();
     }
 
     public void hvacOn(View view) {
@@ -208,7 +228,7 @@ public class AutoGoControls extends Activity {
         btn.setEnabled(false);
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
         btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_hvacOn), true);
+        MyActivity.editor.putBoolean("isHVACOn", true).apply();
     }
 
     public void hvacOff(View view){
@@ -221,76 +241,69 @@ public class AutoGoControls extends Activity {
         btn.setEnabled(true);
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
         btn.setEnabled(false);
-        SaveSetting(getResources().getString(R.string.setting_hvacOn), false);
+        MyActivity.editor.putBoolean("isHVACOn", false).apply();
     }
 
-    public void ag_securityActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+    public void lightsOff(View view) {
+        MyActivity.areLightsOn=false;
+        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
+        btn.setEnabled(true);
+        btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
+        btn.setEnabled(false);
+        MyActivity.editor.putBoolean("areLightsOn", false).apply();
     }
 
-    public void ag_controlsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoControls.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+    public void lightsOn(View view) {
+        MyActivity.areLightsOn=true;
+        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
+        btn.setEnabled(false);
+        btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
+        btn.setEnabled(true);
+        MyActivity.editor.putBoolean("areLightsOn", true).apply();
     }
 
-    public void ag_locationActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+    public void tempUp(View view){
+        if (MyActivity.setTemp < 80) {
+            MyActivity.setTemp++;
+            MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
+            if (MyActivity.setTemp==80)
+            {
+                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
+                btn.setEnabled(false);
+            }
+            if(MyActivity.setTemp>60)
+            {
+                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
+                btn.setEnabled(true);
+            }
+            //recall last command
+            TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+            tv.setText(MyActivity.setTemp + "°");
+        }
     }
 
-    public void ag_alertsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+    public void tempDown(View view){
+        if (MyActivity.setTemp > 60) {
+            MyActivity.setTemp--;
+            MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
+            if (MyActivity.setTemp==60)
+            {
+                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
+                btn.setEnabled(false);
+            }
+            if(MyActivity.setTemp<80)
+            {
+                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
+                btn.setEnabled(true);
+            }
+            //recall last command
+            TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+            tv.setText(MyActivity.setTemp + "°");
+        }
     }
 
-    public void ag_settingsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
 
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
-    }
-
-    public void DisplayResponse(String DisplayMessage)
-    {
+    public void DisplayResponse(String DisplayMessage) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
         builder1.setMessage(DisplayMessage);
         builder1.setCancelable(true);
@@ -299,30 +312,14 @@ public class AutoGoControls extends Activity {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
-                });
+                }
+        );
 
         AlertDialog alert11 = builder1.create();
         alert11.show();
         this.invalidateOptionsMenu();
     }
 
-    public Boolean GetSetting(String keyValue){
-        //set a Default Value
-        Boolean ResultValue = false;
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        ResultValue = sharedPref.getBoolean(keyValue, false);
-        return ResultValue;
-    }
-
-    public void SaveSetting(String keyValue, Boolean savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(keyValue, savedValue);
-        editor.commit();
-
-        UpdateNotifier();
-    }
 
     public void UpdateNotifier(){
         int icon = R.drawable.ic_launcher;
@@ -377,17 +374,13 @@ public class AutoGoControls extends Activity {
         mNotificationManager.notify(1, notification);
 
     }
+
     public void goToSecurity (View view)
     {
         try {
+            MyActivity.editor.putString("lastScreen", "security").apply();
+
             Intent intent = new Intent(this, AutoGoSecurity.class);
-
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "security");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -397,14 +390,9 @@ public class AutoGoControls extends Activity {
     public void goToLocation (View view)
     {
         try {
+            MyActivity.editor.putString("lastScreen", "location").apply();
+
             Intent intent = new Intent(this, AutoGoLocation.class);
-
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "location");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -413,6 +401,8 @@ public class AutoGoControls extends Activity {
 
     public void goToControls (View view)
     {
+        /*
+    }
         Intent intent = new Intent(this, AutoGoControls.class);
 
         //EditText editText = (EditText) findViewById(R.id.edit_message);
@@ -422,6 +412,7 @@ public class AutoGoControls extends Activity {
         //intent.putExtra(EXTRA_MESSAGE, message);
         SaveStringSetting("lastScreen", "controls");
         startActivity(intent);
+        */
     }
 
 
@@ -429,14 +420,6 @@ public class AutoGoControls extends Activity {
     }
 
     public void goToSettings(View view) {
-    }
-
-    public void SaveStringSetting(String keyValue, String savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(keyValue, savedValue);
-        editor.commit();
     }
 }
 

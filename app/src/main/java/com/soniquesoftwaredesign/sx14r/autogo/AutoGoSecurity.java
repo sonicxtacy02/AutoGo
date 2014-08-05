@@ -28,33 +28,18 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.content.Intent;
         import android.content.SharedPreferences;
         import android.os.Build;
+        import android.widget.Toast;
 
 public class AutoGoSecurity extends Activity {
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-
-        String message = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
-
-        TextView textView = new TextView(this);
-        textView.setTextSize(40);
-
-        textView.setText(message);
-
         setContentView(R.layout.ag_security);
         // Show the Up button in the action bar.
         setupActionBar();
 
-        //MyActivity.isStarted = GetSetting(getResources().getString(R.string.setting_start));
-        //isArmed = GetSetting(getResources().getString(R.string.setting_arm));
-        //isArmed = GetSetting(getResources().getString(R.string.setting_arm));
-        //isHVACOn = GetSetting(getResources().getString(R.string.setting_hvacOn));
 
 
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
@@ -62,29 +47,44 @@ public class AutoGoSecurity extends Activity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                //int a = 0;
-
                 switch (v.getId())
                 {
                     case R.id.armStateImg:
                         if(MyActivity.isArmed==false)
                         {
                             ArmVehicle(v);
-
-
                         }else if(MyActivity.isArmed==true)
                         {
-                            DisarmVehicle(v);
+                            UnarmVehicle(v);
                         }
-
-
                         break;
                 }
 
             }
 
         });
+
+        //set default button states
+        if(MyActivity.isArmed) {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
+            btn.setEnabled(true);
+
+            img.setImageResource(R.drawable.armed);
+        }
+        else {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
+            btn.setEnabled(false);
+
+            img.setImageResource(R.drawable.unarmed);
+        }
+
+        //recall last command
+        TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+        tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
     }
 
 
@@ -117,53 +117,33 @@ public class AutoGoSecurity extends Activity {
         //Intent intent = new Intent(this, DisplayMessageActivity.class);
         String message = "";
         switch (item.getItemId()) {
-            case R.id.action_disarm:
+            case R.id.action_unarm:
                 MyActivity.isArmed = false;
-                message = "arm state has been changed to " + MyActivity.isArmed.toString();
-                //message = getResources().getString(R.string.action_unlock);
+                message = "arm state has been changed to false";
+                MyActivity.editor.putBoolean("isArmed", false).apply();
 
-                SaveSetting(getResources().getString(R.string.setting_arm),false);
-                DisplayResponse(message);
-                //add the message to intent to pass data to the intent
-                //intent.putExtra(EXTRA_MESSAGE,message);
-                //go!
-                //startActivity(intent);
                 UpdateNotifier();
                 return true;
             case R.id.action_arm:
-                //message = getResources().getString(R.string.action_lock);
                 MyActivity.isArmed = true;
-                message = "arm state has been changed to " + MyActivity.isArmed.toString();
+                message = "arm state has been changed to true";
+                MyActivity.editor.putBoolean("isArmed", true).apply();
 
-                SaveSetting(getResources().getString(R.string.setting_arm),true);
-                DisplayResponse(message);
-                //add the message to intent to pass data to the intent
-                //intent.putExtra(EXTRA_MESSAGE,message);
-                //go!
-                //startActivity(intent);
                 UpdateNotifier();
                 return true;
             case R.id.action_start:
-                //message = getResources().getString(R.string.action_start);
                 MyActivity.isStarted = true;
-                message = "engine running state has been changed to " + MyActivity.isStarted.toString();
+                message = "engine running state has been changed to true";
+                MyActivity.editor.putBoolean("isStarted", true).apply();
 
-                SaveSetting(getResources().getString(R.string.setting_start),true);
-                DisplayResponse(message);
-                //intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(intent);
                 UpdateNotifier();
                 return true;
             case R.id.action_stop:
-                //message = getResources().getString(R.string.action_start);
                 MyActivity.isStarted = false;
-                message = "engine running state has been changed to " + MyActivity.isStarted.toString();
+                message = "engine running state has been changed to false";
+                MyActivity.editor.putBoolean("isStarted", false).apply();
 
-                SaveSetting(getResources().getString(R.string.setting_start),false);
-                DisplayResponse(message);
                 UpdateNotifier();
-                //intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -180,7 +160,7 @@ public class AutoGoSecurity extends Activity {
         }
         else
         {
-            menu.findItem(R.id.action_disarm).setVisible(false);
+            menu.findItem(R.id.action_unarm).setVisible(false);
         }
         if(MyActivity.isStarted)
         {
@@ -203,101 +183,43 @@ public class AutoGoSecurity extends Activity {
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
         img.setImageResource(R.drawable.armed);
         MyActivity.isArmed=true;
-        MyActivity.LastCommand = "ARM";
+        MyActivity.lastCommand = "ARM";
         final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
         mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ArmVehicle);
+        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
         btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.DisarmVehicle);
+        btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
         btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_arm), true);
+        MyActivity.editor.putBoolean("isArmed", true).apply();
 
-        MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-        tv.setText(MyActivity.LastCommand + " " + "@ " + MyActivity.LastCommandStamp);
+        tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+
+        UpdateNotifier();
     }
 
-    public void DisarmVehicle(View view){
+    public void UnarmVehicle(View view){
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
         img.setImageResource(R.drawable.unarmed);
         MyActivity.isArmed=false;
-        MyActivity.LastCommand = "DISARM";
+        MyActivity.lastCommand = "UNARM";
         final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
         mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.DisarmVehicle);
+        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
         btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.ArmVehicle);
+        btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
         btn.setEnabled(true);
-        SaveSetting(getResources().getString(R.string.setting_arm), false);
+        MyActivity.editor.putBoolean("isArmed", false).apply();
 
-        MyActivity.LastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-        tv.setText(MyActivity.LastCommand + " " + "@ " + MyActivity.LastCommandStamp);
-    }
+        tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
 
-    public void ag_securityActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
-    }
-
-    public void ag_controlsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoControls.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
-    }
-
-    public void ag_locationActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
-    }
-
-    public void ag_alertsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
-    }
-
-    public void ag_settingsActivity (View view)
-    {
-        Intent intent = new Intent(this, AutoGoSecurity.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-
-        startActivity(intent);
+        UpdateNotifier();
     }
 
     public void UpdateNotifier(){
@@ -371,70 +293,46 @@ public class AutoGoSecurity extends Activity {
         this.invalidateOptionsMenu();
     }
 
-    public Boolean GetSetting(String keyValue){
-        //set a Default Value
-        Boolean ResultValue = false;
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        ResultValue = sharedPref.getBoolean(keyValue, false);
-        return ResultValue;
-    }
-
-    public void SaveSetting(String keyValue, Boolean savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(keyValue, savedValue);
-        editor.commit();
-
-        UpdateNotifier();
-    }
-
     public void goToSecurity (View view)
     {
+        /*
         try {
+            MyActivity.editor.putString("lastScreen", "security");
+
             Intent intent = new Intent(this, AutoGoSecurity.class);
-
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "security");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
     public void goToLocation (View view)
     {
         try {
+            MyActivity.editor.putString("lastScreen", "location").apply();
+
             Intent intent = new Intent(this, AutoGoLocation.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
+    }
 
-            //String message = editText.getText().toString();
+    public void goToControls (View view)
+    {
+        try
+        {
+            MyActivity.editor.putString("lastScreen", "controls").apply();
 
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "location");
+            Intent intent = new Intent(this, AutoGoControls.class);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void goToControls (View view)
-    {
-        Intent intent = new Intent(this, AutoGoControls.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-        SaveStringSetting("lastScreen", "controls");
-        startActivity(intent);
-    }
 
     public void goToAlerts(View view) {
     }
@@ -442,13 +340,7 @@ public class AutoGoSecurity extends Activity {
     public void goToSettings(View view) {
     }
 
-    public void SaveStringSetting(String keyValue, String savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(keyValue, savedValue);
-        editor.commit();
-    }
+
 
 }
 

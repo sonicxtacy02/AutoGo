@@ -55,25 +55,18 @@ public class AutoGoLocation extends Activity {
     GPSTracker deviceGPS;
     Location deviceLocation = new Location("Device Location");
     // latitude and longitude
-    double latitude = 37.533;
+    double latitude = 37.533;  //testing coordinates
     double longitude = -77.467;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.ag_location);
 
 
         try {
             // Loading map
             initializeMap();
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,14 +191,9 @@ public class AutoGoLocation extends Activity {
     public void goToSecurity (View view)
     {
         try {
+            MyActivity.editor.putString("lastScreen", "security").apply();
+
             Intent intent = new Intent(this, AutoGoSecurity.class);
-
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "security");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -214,34 +202,29 @@ public class AutoGoLocation extends Activity {
 
     public void goToLocation (View view)
     {
-        /**
+        /*
         try {
+            MyActivity.editor.putString("lastScreen", "location");
+
             Intent intent = new Intent(this, AutoGoLocation.class);
-
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "location");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }
-         **/
+        */
     }
 
     public void goToControls (View view)
     {
-        Intent intent = new Intent(this, AutoGoControls.class);
+        try
+        {
+            MyActivity.editor.putString("lastScreen", "controls").apply();
 
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-        SaveStringSetting("lastScreen", "controls");
-        startActivity(intent);
+            Intent intent = new Intent(this, AutoGoControls.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -249,14 +232,6 @@ public class AutoGoLocation extends Activity {
     }
 
     public void goToSettings(View view) {
-    }
-
-    public void SaveStringSetting(String keyValue, String savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(keyValue, savedValue);
-        editor.commit();
     }
 
 

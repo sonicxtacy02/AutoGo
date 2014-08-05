@@ -10,13 +10,13 @@
     <string name="ag_security_lockDoorsLbl">Lock Doors</string>
     <string name="ag_security_unlockDoorsLbl">Unlock Doors</string>
     <string name="ag_security_armVehicleLbl">Arm Vehicle</string>
-    <string name="ag_security_disarmVehicleLbl">   Disarm Vehicle</string>
+    <string name="ag_security_unarmVehicleLbl">   Unarm Vehicle</string>
     <string name="ag_security_lastUpdateLbl">Last Command:</string>
     <string name="edit_message">Enter A Message</string>
     <string name="button_send">Send</string>
     <string name="ag_security_title">AutoGo Security</string>
     <string name="ag_security_armcommand">ARM</string>
-    <string name="ag_security_disarmcommand">DISARM</string>
+    <string name="ag_security_unarmcommand">UNARM</string>
     <string name="ag_security_shutdowncommand">Shutdown</string>
     <string name="ag_security_restorecommand">Restore</string>
     <string name="ag_security_armedStateLbl">Vehicle Armed State Indicator</string>
@@ -73,5 +73,6 @@
     <string name="ag_location_headinglbl">N/A</string>
     <string name="ag_location_voltlbl">N/A</string>
     <string name="setting_lastScreen">security</string>
+    <string name="ag_preferences_title">Preferences</string>
 
 </resources>

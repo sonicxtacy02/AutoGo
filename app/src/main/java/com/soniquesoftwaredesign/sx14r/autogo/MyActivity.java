@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 //public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -30,33 +32,38 @@ public class MyActivity extends Activity {
     public static Boolean isArmed;
     public static Boolean isStarted;
     public static Boolean isHVACOn;
-    public static String LastCommand;
-    public static String LastCommandStamp;
+    public static Boolean areLightsOn;
+
+    public static String lastCommand;
+    public static String lastCommandStamp;
     public static String lastScreen;
 
-    public final static String EXTRA_MESSAGE = "com.soniquesoftwaredesign.sx14r.MESSAGE";
+    public static int setTemp;
+
+    public static SharedPreferences prefs;
+    public static SharedPreferences.Editor editor;
+    private static final String PREFERENCES = "AutoGo Preferences";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //get saved settings
-        isStarted = GetSetting(getResources().getString(R.string.setting_start));
-        isArmed = GetSetting(getResources().getString(R.string.setting_arm));
-        isHVACOn = GetSetting(getResources().getString(R.string.setting_hvacOn));
-        lastScreen = GetStringSetting(getResources().getString(R.string.setting_lastScreen));
-        if (lastScreen == null || lastScreen == "null") {
-            //first run
-            lastScreen = "security";
-            SaveStringSetting("lastScreen", lastScreen);
-            setContentView(R.layout.ag_security);
-        } else if (lastScreen == "security") {
-            setContentView(R.layout.ag_security);
-        } else if (lastScreen == "controls") {
-            setContentView(R.layout.ag_controls);
-        } else if (lastScreen == "location") {
-            setContentView(R.layout.ag_location);
-        }
 
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+
+        //get saved settings
+        isStarted = prefs.getBoolean("isStarted", false);
+        isArmed = prefs.getBoolean("isArmed", false);
+        isHVACOn = prefs.getBoolean("isHVACOn", false);
+        areLightsOn = prefs.getBoolean("areLightsOn", false);
+        lastScreen = prefs.getString("lastScreen", "security");
+
+
+        lastCommand = prefs.getString("lastCommand", "null");
+        lastCommandStamp = prefs.getString("lastCommandStamp", "null");
+
+        setTemp = prefs.getInt("setTemp", 72);
 
         int icon = R.drawable.ic_launcher;
         long when = System.currentTimeMillis();
@@ -70,7 +77,6 @@ public class MyActivity extends Activity {
         if (isStarted == true) {
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_start);
         } else {
-
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_stop);
         }
         if (isArmed == true) {
@@ -105,11 +111,22 @@ public class MyActivity extends Activity {
 
         mNotificationManager.notify(1, notification);
 
-
-        //set up notification
-        //SetupNotifier();
-
-
+        if (lastScreen.equals("security") ) {
+            setContentView(R.layout.ag_security);
+            goToSecurity();
+        } else if (lastScreen.equals("controls")) {
+            goToControls();
+            setContentView(R.layout.ag_controls);
+        } else if (lastScreen.equals("location")) {
+            goToLocation();
+            setContentView(R.layout.ag_location);
+        }
+        else {
+            //all else fails, security is a good place to fall to
+            editor.putString("lastScreen", "security").apply();
+            setContentView(R.layout.ag_security);
+            goToSecurity();
+        }
     }
 
 
@@ -131,12 +148,12 @@ public class MyActivity extends Activity {
         //Intent intent = new Intent(this, DisplayMessageActivity.class);
         String message = "";
         switch (item.getItemId()) {
-            case R.id.action_disarm:
+            case R.id.action_unarm:
                 isArmed = false;
                 message = "arm state has been changed to " + isArmed.toString();
                 //message = getResources().getString(R.string.action_unlock);
 
-                SaveSetting(getResources().getString(R.string.setting_arm), false);
+                editor.putBoolean("isArmed", false);
                 final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
                 mp1.start();
                 DisplayResponse(message);
@@ -151,7 +168,7 @@ public class MyActivity extends Activity {
                 isArmed = true;
                 message = "arm state has been changed to " + isArmed.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_arm), true);
+                editor.putBoolean("isArmed", true);
                 final MediaPlayer mp4 = MediaPlayer.create(getBaseContext(), R.raw.lock);
                 mp4.start();
                 DisplayResponse(message);
@@ -166,7 +183,7 @@ public class MyActivity extends Activity {
                 isStarted = true;
                 message = "engine running state has been changed to " + isStarted.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_start), true);
+                editor.putBoolean("isStarted", true);
                 final MediaPlayer mp3 = MediaPlayer.create(getBaseContext(), R.raw.start);
                 mp3.start();
                 DisplayResponse(message);
@@ -179,7 +196,7 @@ public class MyActivity extends Activity {
                 isStarted = false;
                 message = "engine running state has been changed to " + isStarted.toString();
 
-                SaveSetting(getResources().getString(R.string.setting_start), false);
+                editor.putBoolean("isStarted", false);
                 final MediaPlayer mp2 = MediaPlayer.create(getBaseContext(), R.raw.stop);
                 mp2.start();
                 DisplayResponse(message);
@@ -199,7 +216,7 @@ public class MyActivity extends Activity {
         if (isArmed) {
             menu.findItem(R.id.action_arm).setVisible(false);
         } else {
-            menu.findItem(R.id.action_disarm).setVisible(false);
+            menu.findItem(R.id.action_unarm).setVisible(false);
         }
         if (isStarted) {
             menu.findItem(R.id.action_start).setVisible(false);
@@ -214,11 +231,10 @@ public class MyActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        /*
         lastScreen = GetStringSetting("lastScreen");
         if (lastScreen == null || lastScreen == "null") {
-            //first run
-            lastScreen = "security";
-            SaveStringSetting("lastScreen", lastScreen);
             setContentView(R.layout.ag_security);
         } else if (lastScreen == "security") {
             setContentView(R.layout.ag_security);
@@ -227,25 +243,12 @@ public class MyActivity extends Activity {
         } else if (lastScreen == "location") {
             setContentView(R.layout.ag_location);
         }
+        */
     }
 
 
 
-    public Boolean GetSetting(String keyValue){
-        //set a Default Value
-        Boolean ResultValue = false;
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        ResultValue = sharedPref.getBoolean(keyValue, false);
-        return ResultValue;
-    }
 
-    public String GetStringSetting(String keyValue){
-        //set a Default Value
-        String ResultValue;
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        ResultValue = sharedPref.getString(keyValue, "null");
-        return ResultValue;
-    }
 
     public void DisplayResponse(String DisplayMessage)
     {
@@ -361,77 +364,39 @@ public class MyActivity extends Activity {
         UpdateNotifier();
     }
 
-    public void SaveSetting(String keyValue, Boolean savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(keyValue, savedValue);
-        editor.commit();
-
-        UpdateNotifier();
-    }
-
-    public void SaveStringSetting(String keyValue, String savedValue){
-        //write the last action to setting file
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(keyValue, savedValue);
-        editor.commit();
-    }
 
 
-    public void goToSecurity (View view)
+
+    public void goToSecurity ()
     {
-        try {
-            Intent intent = new Intent(this, AutoGoSecurity.class);
+        editor.putString("lastScreen", "security").apply();
 
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "security");
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(this, AutoGoSecurity.class);
+        startActivity(intent);
     }
 
-    public void goToLocation (View view)
+    public void goToLocation ()
     {
-        try {
-            Intent intent = new Intent(this, AutoGoLocation.class);
+        editor.putString("lastScreen", "location").apply();
 
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-            //String message = editText.getText().toString();
-
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            SaveStringSetting("lastScreen", "location");
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(this, AutoGoLocation.class);
+        startActivity(intent);
     }
 
-    public void goToControls (View view)
+    public void goToControls ()
     {
+        editor.putString("lastScreen", "controls").apply();
+
         Intent intent = new Intent(this, AutoGoControls.class);
-
-        //EditText editText = (EditText) findViewById(R.id.edit_message);
-
-        //String message = editText.getText().toString();
-
-        //intent.putExtra(EXTRA_MESSAGE, message);
-        SaveStringSetting("lastScreen", "controls");
         startActivity(intent);
     }
 
 
-    public void goToAlerts(View view) {
+    public void goToAlerts() {
     }
 
-    public void goToSettings(View view) {
+    public void goToSettings() {
     }
+
 }
 

@@ -92,7 +92,8 @@
             android:layout_marginTop="85dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_controls_climateUpLbl"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="tempUp"/>
 
         <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
             android:id="@+id/ag_controls_climateDownBtn"
@@ -105,10 +106,11 @@
             android:layout_marginTop="85dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_controls_climateDownLbl"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="tempDown"/>
 
         <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
-            android:id="@+id/ag_controls_lightingBtn"
+            android:id="@+id/ag_controls_lightingOnBtn"
             style="android:buttonStyle"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -117,7 +119,8 @@
             android:layout_marginTop="435dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_controls_lightingLbl"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="lightsOn"/>
 
         <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
             android:id="@+id/ag_controls_lightingOffBtn"
@@ -129,7 +132,8 @@
             android:layout_marginTop="435dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_controls_lightingOffLbl"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="lightsOff"/>
 
         <ImageView
             android:id="@+id/ag_controls_hvacDialImg"
@@ -143,7 +147,7 @@
             android:src="@drawable/ag_controls_15" />
 
         <TextView
-            android:id="@+id/ag_controls_hvacTempLbl"
+            android:id="@+id/ag_controls_hvacTempSetting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/ag_controls_hvacDialImg"
@@ -162,61 +166,6 @@
             android:src="@drawable/ag_controls_power_off" />
 
     </RelativeLayout>
-
-    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
-        android:id="@+id/ag_main_locationBtn"
-        style="android:buttonStyle"
-        android:layout_width="77dp"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="-2dp"
-        android:onClick="ag_locationActivity"
-        android:visibility="visible"
-        android:background="@android:color/transparent"/>
-
-    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
-        android:id="@+id/ag_main_controlsBtn"
-        style="android:buttonStyle"
-        android:layout_width="77dp"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="70dp"
-        android:onClick="ag_controlsActivity"
-        android:visibility="visible"
-        android:background="@android:color/transparent"/>
-
-    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
-        android:id="@+id/ag_main_securityBtn"
-        style="android:buttonStyle"
-        android:layout_width="77dp"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="141dp"
-        android:onClick="ag_securityActivity"
-        android:visibility="visible"
-        android:background="@android:color/transparent"/>
-
-    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
-        android:id="@+id/ag_main_alertsBtn"
-        style="android:buttonStyle"
-        android:layout_width="77dp"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="215dp"
-        android:onClick="ag_alertsActivity"
-        android:visibility="visible"
-        android:background="@android:color/transparent" />
-
-    <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
-        android:id="@+id/ag_main_settingsBtn"
-        style="android:buttonStyle"
-        android:layout_width="77dp"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="286dp"
-        android:onClick="ag_settingsActivity"
-        android:visibility="visible"
-        android:background="@android:color/transparent" />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_armed"
         android:title="@string/action_arm"
         android:showAsAction="ifRoom" />
-    <item android:id="@+id/action_disarm"
+    <item android:id="@+id/action_unarm"
         android:icon="@drawable/ic_unarmed"
         android:title="@string/action_unarm"
         android:showAsAction="ifRoom" />

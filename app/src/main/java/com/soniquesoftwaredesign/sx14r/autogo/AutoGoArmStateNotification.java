@@ -14,11 +14,13 @@ public class AutoGoArmStateNotification extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent){
+        /*
         Toast.makeText(context, "this is my Lock Toast message!!! =)", Toast.LENGTH_LONG).show();
         final MediaPlayer mp1 = MediaPlayer.create(context, R.raw.lock);
         mp1.start();
         mClass = new MyActivity();
         mClass.SaveSetting("IsArmed", true);
+        */
 
 
     }
