@@ -33,6 +33,8 @@ public class MyActivity extends Activity {
     public static Boolean isStarted;
     public static Boolean isHVACOn;
     public static Boolean areLightsOn;
+    public static Boolean isWindowUp;
+    public static Boolean isVehicleDisabled;
 
     public static String lastCommand;
     public static String lastCommandStamp;
@@ -57,6 +59,8 @@ public class MyActivity extends Activity {
         isArmed = prefs.getBoolean("isArmed", false);
         isHVACOn = prefs.getBoolean("isHVACOn", false);
         areLightsOn = prefs.getBoolean("areLightsOn", false);
+        isWindowUp = prefs.getBoolean("isWindowUp", false);
+        isVehicleDisabled = prefs.getBoolean("isVehicleDisabled", false);
         lastScreen = prefs.getString("lastScreen", "security");
 
 

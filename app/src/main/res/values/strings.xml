@@ -74,5 +74,10 @@
     <string name="ag_location_voltlbl">N/A</string>
     <string name="setting_lastScreen">security</string>
     <string name="ag_preferences_title">Preferences</string>
+    <string name="ag_controls_vehicleStartedWarningDialog">Climate control is disabled while vehicle is off.  Do you want to start the vehicle to enable this action?</string>
+    <string name="ag_controls_hvacOnWarningDialog">Climate control is currently off.  Do you want to power on climate control to enable this action?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="ag_controls_hvacControlLbl">HVAC Control</string>
 
 </resources>

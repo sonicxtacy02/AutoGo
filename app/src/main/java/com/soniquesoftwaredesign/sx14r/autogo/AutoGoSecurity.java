@@ -5,6 +5,7 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import java.util.Calendar;
 //import java.util.Date;
 
+        import android.graphics.drawable.GradientDrawable;
         import android.media.MediaPlayer;
         import android.os.Bundle;
         import android.app.Activity;
@@ -12,13 +13,20 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.app.Notification;
         import android.app.NotificationManager;
         import android.app.PendingIntent;
+        import android.view.Gravity;
+        import android.view.LayoutInflater;
         import android.view.Menu;
         import android.view.MenuInflater;
         import android.view.MenuItem;
         import android.view.View;
         import android.view.View.OnClickListener;
+        import android.view.ViewGroup.LayoutParams;
 //import android.widget.Button;
+        import android.view.WindowManager;
+        import android.widget.Button;
         import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.PopupWindow;
         import android.widget.RemoteViews;
         import android.widget.TextView;
         import android.support.v4.app.NavUtils;
@@ -31,7 +39,6 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.widget.Toast;
 
 public class AutoGoSecurity extends Activity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,7 @@ public class AutoGoSecurity extends Activity {
         setContentView(R.layout.ag_security);
         // Show the Up button in the action bar.
         setupActionBar();
+
 
 
 
@@ -81,11 +89,44 @@ public class AutoGoSecurity extends Activity {
 
             img.setImageResource(R.drawable.unarmed);
         }
+        if(MyActivity.isWindowUp){
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsdownbtn);
+            btn.setEnabled(true);
+        }else
+        {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsdownbtn);
+            btn.setEnabled(false);
+        }
+        if(MyActivity.isVehicleDisabled){
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_restorebtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
+            btn.setEnabled(true);
+        }else
+        {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_restorebtn);
+            btn.setEnabled(false);
+        }
 
         //recall last command
         TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
         tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -220,6 +261,94 @@ public class AutoGoSecurity extends Activity {
         MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
 
         UpdateNotifier();
+    }
+
+    public void WindowsUp(View view){
+        if(MyActivity.isWindowUp==false) {
+            MyActivity.isWindowUp=true;
+            MyActivity.lastCommand = "WINDOWUP";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            MyActivity.editor.putBoolean("isWindowUp", true).apply();
+
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsdownbtn);
+            btn.setEnabled(true);
+        }
+    }
+
+    public void WindowsDown(View view){
+        if(MyActivity.isWindowUp) {
+            MyActivity.isWindowUp=false;
+            MyActivity.lastCommand = "WINDOWDOWN";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            MyActivity.editor.putBoolean("isWindowUp", false).apply();
+
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsdownbtn);
+            btn.setEnabled(false);
+        }
+    }
+
+    public void DisplaySecurityPanel(View view){
+        LayoutInflater layoutInflater
+                = (LayoutInflater)getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.ag_pin_panel, null);
+        final PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT);
+
+        //Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
+        //btnDismiss.setOnClickListener(new Button.OnClickListener()
+
+        popupWindow.showAtLocation(view, Gravity.TOP, 0,200);
+    }
+
+    public void ShutdownVehicle(View view){
+        if(MyActivity.isVehicleDisabled==false) {
+            MyActivity.isVehicleDisabled=true;
+            MyActivity.lastCommand = "SHUTDOWN";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            MyActivity.editor.putBoolean("isVehicleDisabled", true).apply();
+
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_restorebtn);
+            btn.setEnabled(true);
+        }
+    }
+
+    public void RestoreVehicle(View view){
+        if(MyActivity.isVehicleDisabled==true) {
+            MyActivity.isVehicleDisabled=false;
+            MyActivity.lastCommand = "RESTORE";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            MyActivity.editor.putBoolean("isVehicleDisabled", false).apply();
+
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_security_restorebtn);
+            btn.setEnabled(false);
+        }
     }
 
     public void UpdateNotifier(){

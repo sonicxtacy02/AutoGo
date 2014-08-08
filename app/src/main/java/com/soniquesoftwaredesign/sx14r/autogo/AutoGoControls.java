@@ -33,6 +33,9 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.content.SharedPreferences;
         import android.os.Build;
 
+        import java.text.DateFormat;
+        import java.util.Calendar;
+
 public class AutoGoControls extends Activity {
 
 
@@ -70,11 +73,27 @@ public class AutoGoControls extends Activity {
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
             btn.setEnabled(true);
         }
+        if (MyActivity.setTemp==80)
+        {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
+            btn.setEnabled(true);
+        }else if(MyActivity.setTemp==60)
+        {
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
+            btn.setEnabled(false);
+        }
+
         //set temp label from value
         //recall last command
         TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
         tv.setText(MyActivity.setTemp + "°");
 
+        //set the temp image value
+        SetTempImage(MyActivity.setTemp);
     }
 
     /**
@@ -189,18 +208,26 @@ public class AutoGoControls extends Activity {
     public void startVehicle(View view) {
         if (MyActivity.isStarted==false){
             MyActivity.isStarted=true;
+
+
+            final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.start);
+            mp1.start();
+
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
+            btn.setEnabled(true);
+            MyActivity.editor.putBoolean("isStarted", true).apply();
+
+            MyActivity.lastCommand = "STARTVEHICLE";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+
+            UpdateNotifier();
         }
-
-        final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.start);
-        mp1.start();
-
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
-        btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
-        btn.setEnabled(true);
-        MyActivity.editor.putBoolean("isStarted", true).apply();
-
-        UpdateNotifier();
     }
 
     public void stopVehicle(View view){
@@ -215,33 +242,100 @@ public class AutoGoControls extends Activity {
         btn.setEnabled(true);
         MyActivity.editor.putBoolean("isStarted", false).apply();
 
+        MyActivity.lastCommand = "STOPVEHICLE";
+        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+        //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+
         UpdateNotifier();
     }
 
     public void hvacOn(View view) {
-        MyActivity.isHVACOn=true;
-        ImageView img = (ImageView) findViewById(R.id.ag_controls_hvacStateImg);
-        img.setImageResource(R.drawable.ag_controls_power_on);
-        //final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
-        //mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOnBtn);
-        btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
-        btn.setEnabled(true);
-        MyActivity.editor.putBoolean("isHVACOn", true).apply();
+        if(MyActivity.isStarted) {
+            MyActivity.isHVACOn = true;
+            ImageView img = (ImageView) findViewById(R.id.ag_controls_hvacStateImg);
+            img.setImageResource(R.drawable.ag_controls_power_on);
+            //final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
+            //mp1.start();
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOnBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
+            btn.setEnabled(true);
+            MyActivity.editor.putBoolean("isHVACOn", true).apply();
+
+            MyActivity.lastCommand = "HVACON";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+        }
+        else
+        {
+            //engine must be started to control HVAC
+            VehicleStartedWarningDialog();
+        }
     }
 
     public void hvacOff(View view){
-        MyActivity.isHVACOn=false;
-        ImageView img = (ImageView) findViewById(R.id.ag_controls_hvacStateImg);
-        img.setImageResource(R.drawable.ag_controls_power_off);
-        //final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
-        //mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOnBtn);
-        btn.setEnabled(true);
-        btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
-        btn.setEnabled(false);
-        MyActivity.editor.putBoolean("isHVACOn", false).apply();
+        if(MyActivity.isStarted) {
+            MyActivity.isHVACOn=false;
+            ImageView img = (ImageView) findViewById(R.id.ag_controls_hvacStateImg);
+            img.setImageResource(R.drawable.ag_controls_power_off);
+            //final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
+            //mp1.start();
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOnBtn);
+            btn.setEnabled(true);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
+            btn.setEnabled(false);
+            MyActivity.editor.putBoolean("isHVACOn", false).apply();
+
+            MyActivity.lastCommand = "HVACOFF";
+            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+        }
+        else
+        {
+            //engine must be started to control HVAC
+            VehicleStartedWarningDialog();
+        }
+    }
+
+    public void VehicleStartedWarningDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.ag_controls_hvacControlLbl))
+                .setMessage(getString(R.string.ag_controls_vehicleStartedWarningDialog))
+                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        startVehicle(getCurrentFocus());
+                        hvacOn(getCurrentFocus());
+                    }
+                }).setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        }).show();
+    }
+
+    public void HVACOnWarningDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.ag_controls_hvacControlLbl))
+                .setMessage(getString(R.string.ag_controls_hvacOnWarningDialog))
+                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        startVehicle(getCurrentFocus());
+                        hvacOn(getCurrentFocus());
+                    }
+                }).setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        }).show();
     }
 
     public void lightsOff(View view) {
@@ -251,6 +345,11 @@ public class AutoGoControls extends Activity {
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
         btn.setEnabled(false);
         MyActivity.editor.putBoolean("areLightsOn", false).apply();
+
+        MyActivity.lastCommand = "LIGHTSOFF";
+        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
     }
 
     public void lightsOn(View view) {
@@ -260,45 +359,132 @@ public class AutoGoControls extends Activity {
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
         btn.setEnabled(true);
         MyActivity.editor.putBoolean("areLightsOn", true).apply();
+
+        MyActivity.lastCommand = "LIGHTSON";
+        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
     }
 
     public void tempUp(View view){
-        if (MyActivity.setTemp < 80) {
-            MyActivity.setTemp++;
-            MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
-            if (MyActivity.setTemp==80)
+        if (MyActivity.isStarted) {
+            //cars gotta be on
+            if (MyActivity.isHVACOn) {
+                //hvac gotta be on
+                if (MyActivity.setTemp < 80) {
+                    MyActivity.setTemp++;
+                    MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
+                    if (MyActivity.setTemp == 80) {
+                        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
+                        btn.setEnabled(false);
+                    }
+                    if (MyActivity.setTemp > 60) {
+                        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
+                        btn.setEnabled(true);
+                    }
+                    //recall last command
+                    TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+                    tv.setText(MyActivity.setTemp + "°");
+
+                    SetTempImage(MyActivity.setTemp);
+
+                    MyActivity.lastCommand = "TEMPUP";
+                    MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                    //tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+                    //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+                    MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+                    MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+
+                }
+            } else
             {
-                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
-                btn.setEnabled(false);
+                //HVAC not on
+                HVACOnWarningDialog();
             }
-            if(MyActivity.setTemp>60)
-            {
-                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
-                btn.setEnabled(true);
-            }
-            //recall last command
-            TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
-            tv.setText(MyActivity.setTemp + "°");
+
+        } else
+        {
+            //cars not on
+            VehicleStartedWarningDialog();
         }
     }
 
     public void tempDown(View view){
-        if (MyActivity.setTemp > 60) {
-            MyActivity.setTemp--;
-            MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
-            if (MyActivity.setTemp==60)
+        if (MyActivity.isStarted) {
+            //cars gotta be on
+            if (MyActivity.isHVACOn) {
+                //hvac gotta be on
+                if (MyActivity.setTemp > 60) {
+                    MyActivity.setTemp--;
+                    MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
+                    if (MyActivity.setTemp==60)
+                    {
+                        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
+                        btn.setEnabled(false);
+                    }
+                    if(MyActivity.setTemp<80)
+                    {
+                        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
+                        btn.setEnabled(true);
+                    }
+                    //recall last command
+                    TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+                    tv.setText(MyActivity.setTemp + "°");
+
+                    SetTempImage(MyActivity.setTemp);
+
+                    MyActivity.lastCommand = "TEMPDOWN";
+                    MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+
+                    MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+                    MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+                }
+            } else
             {
-                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
-                btn.setEnabled(false);
+                //HVAC not on
+                HVACOnWarningDialog();
             }
-            if(MyActivity.setTemp<80)
-            {
-                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
-                btn.setEnabled(true);
-            }
-            //recall last command
-            TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
-            tv.setText(MyActivity.setTemp + "°");
+
+        } else
+        {
+            //cars not on
+            VehicleStartedWarningDialog();
+        }
+    }
+
+    public void SetTempImage(int temp){
+        ImageView iv = (ImageView) findViewById(R.id.ag_controls_hvacDialImg);
+        //fix image
+        if(temp==60){
+            iv.setImageResource(R.drawable.ag_controls_1);
+        }else if(temp==61) {
+            iv.setImageResource(R.drawable.ag_controls_2);
+        }else if(temp==62) {
+            iv.setImageResource(R.drawable.ag_controls_3);
+        }else if(temp > 62 && temp < 64) {
+            iv.setImageResource(R.drawable.ag_controls_4);
+        }else if(temp >= 64 && temp < 66) {
+            iv.setImageResource(R.drawable.ag_controls_5);
+        }else if(temp >= 66 && temp < 68) {
+            iv.setImageResource(R.drawable.ag_controls_6);
+        }else if(temp >= 68 && temp < 70) {
+            iv.setImageResource(R.drawable.ag_controls_7);
+        }else if(temp >= 70 && temp < 72) {
+            iv.setImageResource(R.drawable.ag_controls_8);
+        }else if(temp >= 72 && temp < 74) {
+            iv.setImageResource(R.drawable.ag_controls_9);
+        }else if(temp >= 74 && temp < 76) {
+            iv.setImageResource(R.drawable.ag_controls_10);
+        }else if(temp == 76) {
+            iv.setImageResource(R.drawable.ag_controls_11);
+        }else if(temp == 77) {
+            iv.setImageResource(R.drawable.ag_controls_12);
+        }else if(temp == 78) {
+            iv.setImageResource(R.drawable.ag_controls_13);
+        }else if(temp == 79) {
+            iv.setImageResource(R.drawable.ag_controls_14);
+        }else if(temp >= 80) {
+            iv.setImageResource(R.drawable.ag_controls_15);
         }
     }
 

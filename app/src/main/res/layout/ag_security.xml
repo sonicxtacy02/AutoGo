@@ -76,7 +76,8 @@
             android:layout_marginTop="85dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_security_windowsUpLbl"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="WindowsUp"/>
 
         <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
 
@@ -89,8 +90,9 @@
             android:layout_marginRight="25dp"
             android:layout_marginTop="85dp"
             android:background="@drawable/base_button_white"
-            android:text="@string/ag_security_windowsUpLbl"
-            android:textSize="14sp" />
+            android:text="@string/ag_security_windowsDownLbl"
+            android:textSize="14sp"
+            android:onClick="WindowsDown"/>
 
         <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
             android:id="@+id/ag_security_shutdownbtn"
@@ -102,7 +104,8 @@
             android:layout_marginTop="435dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_security_shutdowncommand"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="DisplaySecurityPanel"/>
 
         <com.soniquesoftwaredesign.sx14r.autogo.SAutoBgButton
 
@@ -115,7 +118,8 @@
             android:layout_marginTop="435dp"
             android:background="@drawable/base_button_white"
             android:text="@string/ag_security_restorecommand"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:onClick="RestoreVehicle"/>
 
         <TextView
             android:id="@+id/lastCommandAndStamp"
