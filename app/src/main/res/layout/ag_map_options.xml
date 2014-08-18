@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ag_map_options"
+    android:background="@drawable/ag_map_options"
+    android:alpha="80">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:alpha="0"
+        android:onClick="DismissMapOptions"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Geofence"
+        android:textSize="14sp"
+        android:id="@+id/textView"
+        android:textColor="#FFF"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Geofence"
+        android:textSize="14sp"
+        android:id="@+id/textView2"
+        android:textColor="#FFF"
+        android:layout_marginTop="22dp"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Last Day"
+        android:textSize="14sp"
+        android:id="@+id/textView3"
+        android:textColor="#FFF"
+        android:layout_marginTop="22dp"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Last Week"
+        android:textSize="14sp"
+        android:id="@+id/textView4"
+        android:textColor="#FFF"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Last Month"
+        android:textSize="14sp"
+        android:id="@+id/textView5"
+        android:textColor="#FFF"
+        android:layout_marginTop="27dp"
+        android:layout_gravity="center_horizontal"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:alpha="0"
+        android:onClick="DismissMapOptions"
+        />
+</LinearLayout>

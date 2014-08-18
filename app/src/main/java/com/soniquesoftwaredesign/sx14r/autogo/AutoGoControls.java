@@ -6,6 +6,7 @@ package com.soniquesoftwaredesign.sx14r.autogo;
 //import java.util.Date;
 
 //import android.media.MediaPlayer;
+        import android.graphics.Color;
         import android.media.MediaPlayer;
         import android.os.Bundle;
         import android.app.Activity;
@@ -38,6 +39,9 @@ package com.soniquesoftwaredesign.sx14r.autogo;
 
 public class AutoGoControls extends Activity {
 
+    public static SharedPreferences prefs;
+    public static SharedPreferences.Editor editor;
+    private static final String PREFERENCES = "AutoGo Preferences";
 
 
     @Override
@@ -45,11 +49,17 @@ public class AutoGoControls extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.ag_controls);
+
         // Show the Up button in the action bar.
         setupActionBar();
 
+       SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+
+
         //set default button states
-        if(MyActivity.isStarted) {
+        MyActivity.setTemp = prefs.getInt("setTemp", 72);
+        if(prefs.getBoolean("isStarted",false)) {
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
             btn.setEnabled(true);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
@@ -61,7 +71,7 @@ public class AutoGoControls extends Activity {
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
             btn.setEnabled(true);
         }
-        if(MyActivity.areLightsOn) {
+        if(prefs.getBoolean("areLightsOn",false)) {
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
             btn.setEnabled(true);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
@@ -73,27 +83,39 @@ public class AutoGoControls extends Activity {
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
             btn.setEnabled(true);
         }
-        if (MyActivity.setTemp==80)
+        if (prefs.getInt("setTemp",72)==80)
         {
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
             btn.setEnabled(false);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
             btn.setEnabled(true);
-        }else if(MyActivity.setTemp==60)
+        }else if(prefs.getInt("setTemp",72)==60)
         {
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
             btn.setEnabled(true);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
             btn.setEnabled(false);
+        }
+        if (prefs.getBoolean("isHVACOn", false)) {
+            ImageView myHvacOff = (ImageView) findViewById(R.id.ag_controls_hvacOffImg);
+            myHvacOff.setVisibility(View.INVISIBLE);
+            TextView myTempLbl = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+            myTempLbl.setTextColor(Color.BLACK);
+        }else
+        {
+            ImageView myHvacOff = (ImageView) findViewById(R.id.ag_controls_hvacOffImg);
+            myHvacOff.setVisibility(View.VISIBLE);
+            TextView myTempLbl = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+            myTempLbl.setTextColor(Color.DKGRAY);
         }
 
         //set temp label from value
         //recall last command
         TextView tv = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
-        tv.setText(MyActivity.setTemp + "°");
+        tv.setText(prefs.getInt("setTemp",72) + "°");
 
         //set the temp image value
-        SetTempImage(MyActivity.setTemp);
+        SetTempImage(prefs.getInt("setTemp", 72));
     }
 
     /**
@@ -125,11 +147,11 @@ public class AutoGoControls extends Activity {
         String message = "";
         switch (item.getItemId()) {
             case R.id.action_unarm:
-                MyActivity.isArmed = false;
-                message = "arm state has been changed to " + MyActivity.isArmed.toString();
+                //editor.putBoolean = false;
+                //message = "arm state has been changed to " + MyActivity.isArmed.toString();
                 //message = getResources().getString(R.string.action_unlock);
 
-                MyActivity.editor.putBoolean("isArmed", false).apply();
+                editor.putBoolean("isArmed", false).apply();
                 DisplayResponse(message);
                 //add the message to intent to pass data to the intent
                 //intent.putExtra(EXTRA_MESSAGE,message);
@@ -139,10 +161,10 @@ public class AutoGoControls extends Activity {
                 return true;
             case R.id.action_arm:
                 //message = getResources().getString(R.string.action_lock);
-                MyActivity.isArmed = true;
-                message = "arm state has been changed to " + MyActivity.isArmed.toString();
+                //MyActivity.isArmed = true;
+                //message = "arm state has been changed to " + MyActivity.isArmed.toString();
 
-                MyActivity.editor.putBoolean("isArmed", true).apply();
+                editor.putBoolean("isArmed", true).apply();
                 DisplayResponse(message);
                 //add the message to intent to pass data to the intent
                 //intent.putExtra(EXTRA_MESSAGE,message);
@@ -152,10 +174,10 @@ public class AutoGoControls extends Activity {
                 return true;
             case R.id.action_start:
                 //message = getResources().getString(R.string.action_start);
-                MyActivity.isStarted = true;
-                message = "engine running state has been changed to " + MyActivity.isStarted.toString();
+                //MyActivity.isStarted = true;
+                //message = "engine running state has been changed to " + MyActivity.isStarted.toString();
 
-                MyActivity.editor.putBoolean("isStarted", true).apply();
+                editor.putBoolean("isStarted", true).apply();
                 DisplayResponse(message);
                 //intent.putExtra(EXTRA_MESSAGE, message);
                 //startActivity(intent);
@@ -163,10 +185,10 @@ public class AutoGoControls extends Activity {
                 return true;
             case R.id.action_stop:
                 //message = getResources().getString(R.string.action_start);
-                MyActivity.isStarted = false;
-                message = "engine running state has been changed to " + MyActivity.isStarted.toString();
+                //MyActivity.isStarted = false;
+                //message = "engine running state has been changed to " + MyActivity.isStarted.toString();
 
-                MyActivity.editor.putBoolean("isStarted", false).apply();
+                editor.putBoolean("isStarted", false).apply();
                 DisplayResponse(message);
                 UpdateNotifier();
                 //intent.putExtra(EXTRA_MESSAGE, message);
@@ -180,8 +202,10 @@ public class AutoGoControls extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
 
-        if(MyActivity.isArmed)
+        if(prefs.getBoolean("isArmed",false))
         {
             menu.findItem(R.id.action_arm).setVisible(false);
         }
@@ -189,7 +213,7 @@ public class AutoGoControls extends Activity {
         {
             menu.findItem(R.id.action_unarm).setVisible(false);
         }
-        if(MyActivity.isStarted)
+        if(prefs.getBoolean("isStarted", false))
         {
             menu.findItem(R.id.action_start).setVisible(false);
         }
@@ -197,17 +221,16 @@ public class AutoGoControls extends Activity {
         {
             menu.findItem(R.id.action_stop).setVisible(false);
         }
-
-
-
         return true;
     }
 
 
 
     public void startVehicle(View view) {
-        if (MyActivity.isStarted==false){
-            MyActivity.isStarted=true;
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if (prefs.getBoolean("isStarted", false)==false){
+            //MyActivity.isStarted=true;
 
 
             final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.start);
@@ -217,44 +240,49 @@ public class AutoGoControls extends Activity {
             btn.setEnabled(false);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
             btn.setEnabled(true);
-            MyActivity.editor.putBoolean("isStarted", true).apply();
+            editor.putBoolean("isStarted", true).apply();
 
-            MyActivity.lastCommand = "STARTVEHICLE";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            //MyActivity.lastCommand = "STARTVEHICLE";
+            //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
             //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
             //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            editor.putString("lastCommand", "STARTVEHICLE").apply();
+            editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
 
             UpdateNotifier();
         }
     }
 
     public void stopVehicle(View view){
-        if(MyActivity.isStarted==true){
-            MyActivity.isStarted=false;
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isStarted",false)==true) {
+            //MyActivity.isStarted=false;
+
+            final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.stop);
+            mp1.start();
+            SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
+            btn.setEnabled(false);
+            btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
+            btn.setEnabled(true);
+            editor.putBoolean("isStarted", false).apply();
+
+            //MyActivity.lastCommand = "STOPVEHICLE";
+            //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+            //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+            editor.putString("lastCommand", "STOPVEHICLE").apply();
+            editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
+
+            UpdateNotifier();
         }
-        final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.stop);
-        mp1.start();
-        SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_stopVehicleBtn);
-        btn.setEnabled(false);
-        btn = (SAutoBgButton) findViewById(R.id.ag_controls_startVehicleBtn);
-        btn.setEnabled(true);
-        MyActivity.editor.putBoolean("isStarted", false).apply();
-
-        MyActivity.lastCommand = "STOPVEHICLE";
-        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-        //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
-
-        UpdateNotifier();
     }
 
     public void hvacOn(View view) {
-        if(MyActivity.isStarted) {
-            MyActivity.isHVACOn = true;
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isStarted", false)) {
+            //MyActivity.isHVACOn = true;
             ImageView img = (ImageView) findViewById(R.id.ag_controls_hvacStateImg);
             img.setImageResource(R.drawable.ag_controls_power_on);
             //final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
@@ -263,14 +291,19 @@ public class AutoGoControls extends Activity {
             btn.setEnabled(false);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
             btn.setEnabled(true);
-            MyActivity.editor.putBoolean("isHVACOn", true).apply();
+            editor.putBoolean("isHVACOn", true).apply();
 
-            MyActivity.lastCommand = "HVACON";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            ImageView myHvacOff = (ImageView) findViewById(R.id.ag_controls_hvacOffImg);
+            myHvacOff.setVisibility(View.INVISIBLE);
+            TextView myTempLbl = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+            myTempLbl.setTextColor(Color.BLACK);
+
+            //MyActivity.lastCommand = "HVACON";
+            //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
             //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
             //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            editor.putString("lastCommand", "HVACON").apply();
+            editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
         }
         else
         {
@@ -280,8 +313,10 @@ public class AutoGoControls extends Activity {
     }
 
     public void hvacOff(View view){
-        if(MyActivity.isStarted) {
-            MyActivity.isHVACOn=false;
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isStarted",false)) {
+            //MyActivity.isHVACOn=false;
             ImageView img = (ImageView) findViewById(R.id.ag_controls_hvacStateImg);
             img.setImageResource(R.drawable.ag_controls_power_off);
             //final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
@@ -290,14 +325,19 @@ public class AutoGoControls extends Activity {
             btn.setEnabled(true);
             btn = (SAutoBgButton) findViewById(R.id.ag_controls_hvacOffBtn);
             btn.setEnabled(false);
-            MyActivity.editor.putBoolean("isHVACOn", false).apply();
+            editor.putBoolean("isHVACOn", false).apply();
 
-            MyActivity.lastCommand = "HVACOFF";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            ImageView myHvacOff = (ImageView) findViewById(R.id.ag_controls_hvacOffImg);
+            myHvacOff.setVisibility(View.VISIBLE);
+            TextView myTempLbl = (TextView) findViewById(R.id.ag_controls_hvacTempSetting);
+            myTempLbl.setTextColor(Color.DKGRAY);
+
+            //MyActivity.lastCommand = "HVACOFF";
+            //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
             //TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
             //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            editor.putString("lastCommand", "HVACOFF").apply();
+            editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
         }
         else
         {
@@ -339,41 +379,47 @@ public class AutoGoControls extends Activity {
     }
 
     public void lightsOff(View view) {
-        MyActivity.areLightsOn=false;
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        //MyActivity.areLightsOn=false;
         SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
         btn.setEnabled(true);
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
         btn.setEnabled(false);
-        MyActivity.editor.putBoolean("areLightsOn", false).apply();
+        editor.putBoolean("areLightsOn", false).apply();
 
-        MyActivity.lastCommand = "LIGHTSOFF";
-        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+        //MyActivity.lastCommand = "LIGHTSOFF";
+        //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        editor.putString("lastCommand", "LIGHTSOFF").apply();
+        editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
     }
 
     public void lightsOn(View view) {
-        MyActivity.areLightsOn=true;
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        //MyActivity.areLightsOn=true;
         SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOnBtn);
         btn.setEnabled(false);
         btn = (SAutoBgButton) findViewById(R.id.ag_controls_lightingOffBtn);
         btn.setEnabled(true);
-        MyActivity.editor.putBoolean("areLightsOn", true).apply();
+        editor.putBoolean("areLightsOn", true).apply();
 
-        MyActivity.lastCommand = "LIGHTSON";
-        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+        //MyActivity.lastCommand = "LIGHTSON";
+        //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        editor.putString("lastCommand", "LIGHTSON").apply();
+        editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
     }
 
     public void tempUp(View view){
-        if (MyActivity.isStarted) {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if (prefs.getBoolean("isStarted", false)) {
             //cars gotta be on
-            if (MyActivity.isHVACOn) {
+            if (prefs.getBoolean("isHVACOn", false)) {
                 //hvac gotta be on
                 if (MyActivity.setTemp < 80) {
                     MyActivity.setTemp++;
-                    MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
+                    editor.putInt("setTemp", MyActivity.setTemp).apply();
                     if (MyActivity.setTemp == 80) {
                         SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateUpBtn);
                         btn.setEnabled(false);
@@ -388,12 +434,12 @@ public class AutoGoControls extends Activity {
 
                     SetTempImage(MyActivity.setTemp);
 
-                    MyActivity.lastCommand = "TEMPUP";
-                    MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                    //MyActivity.lastCommand = "TEMPUP";
+                    //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
                     //tv = (TextView) findViewById(R.id.lastCommandAndStamp);
                     //tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-                    MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-                    MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+                    editor.putString("lastCommand", "TEMPUP").apply();
+                    editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
 
                 }
             } else
@@ -410,13 +456,15 @@ public class AutoGoControls extends Activity {
     }
 
     public void tempDown(View view){
-        if (MyActivity.isStarted) {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if (prefs.getBoolean("isStarted", false)) {
             //cars gotta be on
-            if (MyActivity.isHVACOn) {
+            if (prefs.getBoolean("isHVACOn", false)) {
                 //hvac gotta be on
                 if (MyActivity.setTemp > 60) {
                     MyActivity.setTemp--;
-                    MyActivity.editor.putInt("setTemp", MyActivity.setTemp).apply();
+                    editor.putInt("setTemp", MyActivity.setTemp).apply();
                     if (MyActivity.setTemp==60)
                     {
                         SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_controls_climateDownBtn);
@@ -433,11 +481,11 @@ public class AutoGoControls extends Activity {
 
                     SetTempImage(MyActivity.setTemp);
 
-                    MyActivity.lastCommand = "TEMPDOWN";
-                    MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                    //MyActivity.lastCommand = ;
+                    //MyActivity.lastCommandStamp = ;
 
-                    MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-                    MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+                    editor.putString("lastCommand", "TEMPDOWN").apply();
+                    editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
                 }
             } else
             {
@@ -508,6 +556,8 @@ public class AutoGoControls extends Activity {
 
 
     public void UpdateNotifier(){
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         int icon = R.drawable.ic_launcher;
         long when = System.currentTimeMillis();
         Notification notification = new Notification(icon, getResources().getString(R.string.app_name), when);
@@ -517,7 +567,7 @@ public class AutoGoControls extends Activity {
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.ag_custom_notification);
         contentView.setImageViewResource(R.id.ag_notification_icon, R.drawable.ic_launcher);
         contentView.setTextViewText(R.id.ag_notification_title, getResources().getString(R.string.app_name));
-        if(MyActivity.isStarted==true)
+        if(prefs.getBoolean("isStarted", false)==true)
         {
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_start);
         }else
@@ -525,7 +575,7 @@ public class AutoGoControls extends Activity {
 
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_stop);
         }
-        if(MyActivity.isArmed==true)
+        if(prefs.getBoolean("isArmed", false)==true)
         {
             contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " +  getResources().getString(R.string.protection_state_active) );
             contentView.setImageViewResource(R.id.ag_notification_armStateImg, R.drawable.ic_armed);
@@ -563,8 +613,10 @@ public class AutoGoControls extends Activity {
 
     public void goToSecurity (View view)
     {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         try {
-            MyActivity.editor.putString("lastScreen", "security").apply();
+            editor.putString("lastScreen", "security").apply();
 
             Intent intent = new Intent(this, AutoGoSecurity.class);
             startActivity(intent);
@@ -575,8 +627,11 @@ public class AutoGoControls extends Activity {
 
     public void goToLocation (View view)
     {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         try {
-            MyActivity.editor.putString("lastScreen", "location").apply();
+
+            editor.putString("lastScreen", "location").apply();
 
             Intent intent = new Intent(this, AutoGoLocation.class);
             startActivity(intent);
@@ -603,10 +658,43 @@ public class AutoGoControls extends Activity {
 
 
     public void goToAlerts(View view) {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        try {
+            editor.putString("lastScreen", "alerts").apply();
+
+            Intent intent = new Intent(this, AutoGoAlerts.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void goToSettings(View view) {
+        Intent intent = new Intent(this, AutoGoSettings.class);
+        startActivity(intent);
     }
+
+
+    @Override
+    public void onBackPressed() {
+        if(MyActivity.backPressed)
+        {
+            System.exit(0);
+        }
+        else
+        {
+            //warning
+            Toast.makeText(getApplicationContext(),
+                    "Press Back button again to exit AutoGo", Toast.LENGTH_LONG)
+                    .show();
+            MyActivity.backPressed = true;
+            BackButtonTimer counter = new BackButtonTimer(3000,1000);
+            counter.start();
+        }
+    }
+
+
 }
 
 

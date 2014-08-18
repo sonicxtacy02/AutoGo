@@ -146,6 +146,15 @@
             android:contentDescription="@string/ag_controls_hvacDialLbl"
             android:src="@drawable/ag_controls_15" />
 
+        <ImageView
+            android:id="@+id/ag_controls_hvacOffImg"
+            android:layout_width="108dp"
+            android:layout_height="105dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="127dp"
+            android:layout_marginTop="154dp"
+            android:src="@drawable/ag_controls_hvacoff" />
+
         <TextView
             android:id="@+id/ag_controls_hvacTempSetting"
             android:layout_width="wrap_content"

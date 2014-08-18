@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ag_alerts_bng">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ag_location_vehiclestatusLbl"
+        android:textColor="#FFF"
+        android:textSize="16sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="18dp"
+        android:id="@+id/ag_alerts_statusHeader"
+        android:shadowColor="#000"
+        android:shadowDx="-1"
+        android:shadowDy="-1"
+        android:shadowRadius="5"/>
+
+    <ImageView
+    android:layout_width="350dp"
+    android:layout_height="30dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="40dp"
+    android:paddingTop="0dp"
+    android:id="@+id/ag_alerts_alertLbl"
+    android:src="@drawable/ag_alerts_noalerts"
+
+
+        />
+
+    <ImageView
+        android:layout_width="125dp"
+        android:layout_height="115dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="95dp"
+        android:id="@+id/ag_alerts_alertImg"
+        android:src="@drawable/ag_alerts_ok"
+
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ag_alerts_pressToClearLbl"
+        android:textColor="#FFF"
+        android:textSize="14sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="210dp"
+        android:id="@+id/ag_alerts_pressToClear"
+        android:shadowColor="#000"
+        android:shadowDx="-1"
+        android:shadowDy="-1"
+        android:shadowRadius="5"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ag_alerts_recentAlerts"
+        android:textColor="#FFF"
+        android:textSize="20sp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="245dp"
+        android:id="@+id/ag_alerts_alertsHeader"
+        android:shadowColor="#000"
+        android:shadowDx="-1"
+        android:shadowDy="-1"
+        android:shadowRadius="5"/>
+
+    <ListView
+        android:layout_width="330dp"
+        android:layout_height="200dp"
+        android:id="@+id/ag_alerts_alertList"
+        android:layout_alignLeft="@+id/ag_alerts_alertsHeader"
+        android:layout_alignStart="@+id/ag_alerts_alertsHeader"
+        android:layout_below="@+id/ag_alerts_alertsHeader" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom|center"
+            android:paddingTop="0dp"
+            android:id="@+id/ag_master_buttons"
+            android:src="@drawable/ag_master_buttons"
+
+
+            />
+
+        <Button
+            android:layout_width="78dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:visibility="visible"
+            android:onClick="goToLocation"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="72dp"
+            android:visibility="visible"
+            android:onClick="goToControls"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="142dp"
+            android:visibility="visible"
+            android:onClick="goToSecurity"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="214dp"
+            android:visibility="visible"
+            android:onClick="goToAlerts"
+            android:alpha="0" />
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="284dp"
+            android:visibility="visible"
+            android:onClick="goToSettings"
+            android:alpha="0" />
+    </FrameLayout>
+
+</RelativeLayout>

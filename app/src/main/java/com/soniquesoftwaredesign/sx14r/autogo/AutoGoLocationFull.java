@@ -1,63 +1,27 @@
 package com.soniquesoftwaredesign.sx14r.autogo;
 
 //import java.text.SimpleDateFormat;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.Locale;
-//import java.util.Date;
-import android.location.Criteria;
-import android.media.MediaPlayer;
-import android.os.Bundle;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-//import android.widget.Button;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RemoteViews;
-import android.widget.TextView;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.os.Bundle;
+import android.preference.PreferenceFragment;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.gms.maps.*;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import android.location.Address;
-import android.location.Geocoder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -68,10 +32,17 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+
+//import java.util.Date;
+//import android.widget.Button;
 
 
-public class AutoGoLocation extends Activity {
+public class AutoGoLocationFull extends Activity {
     private GoogleMap googleMap;
     GPSTracker deviceGPS;
     Location deviceLocation = new Location("Device Location");
@@ -88,10 +59,6 @@ public class AutoGoLocation extends Activity {
     public static SharedPreferences.Editor editor;
     private static final String PREFERENCES = "AutoGo Preferences";
 
-    public View popupView;
-    public PopupWindow popupWindow;
-
-
 
 
 
@@ -101,7 +68,7 @@ public class AutoGoLocation extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ag_location);
+        setContentView(R.layout.ag_location_full);
         SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         editor = prefs.edit();
 
@@ -204,8 +171,7 @@ public class AutoGoLocation extends Activity {
 
 
 // create marker
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(onBoardLatitude, onBoardLongitude)).title(onBoardLastUpdated);
-
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(onBoardLatitude, onBoardLongitude)).title("Hello Maps ");
 
 // adding marker
         googleMap.addMarker(marker);
@@ -220,7 +186,7 @@ public class AutoGoLocation extends Activity {
         //geocode
         GeoCodeAddress();
 
-        ImageView iv = new ImageView(AutoGoLocation.this);
+        ImageView iv = new ImageView(AutoGoLocationFull.this);
         iv = (ImageView) findViewById(R.id.ag_location_statusImg);
 
         if(onBoardLatitude == 0 && onBoardLongitude == 0)
@@ -236,7 +202,7 @@ public class AutoGoLocation extends Activity {
             }
         }
 
-        TextView tv = new TextView(AutoGoLocation.this);
+        TextView tv = new TextView(AutoGoLocationFull.this);
         tv=(TextView)findViewById(R.id.ag_location_speed);
         tv.setText(String.valueOf(Math.round(onBoardSpeed)) + " mph");
 
@@ -281,8 +247,8 @@ public class AutoGoLocation extends Activity {
     }
 
     public void GeoCodeAddress(){
-        Geocoder geocoder = new Geocoder(AutoGoLocation.this, Locale.ENGLISH);
-        TextView myAddress = new TextView(AutoGoLocation.this);
+        Geocoder geocoder = new Geocoder(AutoGoLocationFull.this, Locale.ENGLISH);
+        TextView myAddress = new TextView(AutoGoLocationFull.this);
         try {
             List<Address> addresses = geocoder.getFromLocation(onBoardLatitude, onBoardLongitude, 1);
 
@@ -313,7 +279,7 @@ public class AutoGoLocation extends Activity {
     {
         //get distance difference based on sent location
         // create class object
-        deviceGPS = new GPSTracker(AutoGoLocation.this);
+        deviceGPS = new GPSTracker(AutoGoLocationFull.this);
 
         // check if GPS enabled
         if(deviceGPS.canGetLocation()){
@@ -343,7 +309,7 @@ public class AutoGoLocation extends Activity {
             //convert meters to miles
             DecimalFormat dec = new DecimalFormat("###.##");
             distance = ((float) (distance /1609.344));
-            TextView distanceAway = new TextView(AutoGoLocation.this);
+            TextView distanceAway = new TextView(AutoGoLocationFull.this);
             distanceAway=(TextView)findViewById(R.id.ag_location_distanceAway);
             distanceAway.setText(dec.format(distance) + " Miles Away");
         }
@@ -363,35 +329,7 @@ public class AutoGoLocation extends Activity {
         }
     }
 
-    public void ShowMapFullScreen(View v)
-    {
-        Intent intent = new Intent(this, AutoGoLocationFull.class);
-        startActivity(intent);
-    }
 
-    public void ShowMapOptions(View v)
-    {
-
-        LayoutInflater layoutInflater
-                = (LayoutInflater)getBaseContext()
-                .getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupView = layoutInflater.inflate(R.layout.ag_map_options, null );
-        popupWindow = new PopupWindow(
-                popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        popupWindow.setAnimationStyle(R.style.PopupWindowAnimation);
-
-        //Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
-        //btnDismiss.setOnClickListener(new Button.OnClickListener()
-        //setContentView(R.layout.ag_pin_panel);
-        popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, 0,390);
-    }
-
-    public void DismissMapOptions(View v)
-    {
-        popupWindow.dismiss();
-    }
 
     @Override
     protected void onResume() {
@@ -399,94 +337,8 @@ public class AutoGoLocation extends Activity {
         //initializeMap();
     }
 
-    public void goToSecurity (View view)
-    {
-        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
-        editor = prefs.edit();
-        try {
-            MyActivity.editor.putString("lastScreen", "security").apply();
-
-            Intent intent = new Intent(this, AutoGoSecurity.class);
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void goToLocation (View view)
-    {
-        /*
-        try {
-            MyActivity.editor.putString("lastScreen", "location");
-
-            Intent intent = new Intent(this, AutoGoLocation.class);
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
-    }
-
-    public void goToControls (View view)
-    {
-        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
-        editor = prefs.edit();
-        try
-        {
-            MyActivity.editor.putString("lastScreen", "controls").apply();
-
-            Intent intent = new Intent(this, AutoGoControls.class);
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    public void goToAlerts(View view) {
-        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
-        editor = prefs.edit();
-        try {
-            MyActivity.editor.putString("lastScreen", "alerts").apply();
-
-            Intent intent = new Intent(this, AutoGoAlerts.class);
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void goToSettings(View view) {
-        Intent intent = new Intent(this, AutoGoSettings.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(MyActivity.backPressed)
-        {
-            System.exit(0);
-        }
-        else
-        {
-            //warning
-            Toast.makeText(getApplicationContext(),
-                    "Press Back button again to exit AutoGo", Toast.LENGTH_LONG)
-                    .show();
-            MyActivity.backPressed = true;
-            BackButtonTimer counter = new BackButtonTimer(3000,1000);
-            counter.start();
-        }
-    }
-
-    public static class MainSettingsFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
-        }
-    }
 
 
 

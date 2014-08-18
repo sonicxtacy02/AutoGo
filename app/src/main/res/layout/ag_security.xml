@@ -52,7 +52,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="110dp"
             android:contentDescription="@string/ag_security_armedStateLbl"
-            android:src="@drawable/unarmed" />
+            android:src="@drawable/unarmed"
+            android:onClick="SetImageArmState"/>
 
         <TextView
             android:id="@+id/lastUpdate"

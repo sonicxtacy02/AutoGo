@@ -38,6 +38,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="88dp"
+            android:alpha="0"
+            android:onClick="RefreshMap"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="88dp"
+            android:layout_gravity="center_horizontal"
+            android:alpha="0"
+            android:onClick="ShowMapOptions"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="88dp"
+            android:layout_gravity="right"
+            android:alpha="0"
+            android:onClick="ShowMapFullScreen"/>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -73,6 +96,7 @@
             />
 
         <TextView
+            android:id="@+id/ag_location_speed"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:text="@string/ag_location_speedlbl"
@@ -83,6 +107,7 @@
             android:paddingBottom="2dp"
             />
         <TextView
+            android:id="@+id/ag_location_altitude"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:text="@string/ag_location_altlbl"
@@ -93,6 +118,7 @@
             android:paddingBottom="2dp"
             />
         <TextView
+            android:id="@+id/ag_location_heading"
             android:layout_width="35dp"
             android:layout_height="wrap_content"
             android:text="@string/ag_location_headinglbl"
@@ -103,6 +129,7 @@
             android:paddingBottom="2dp"
             />
         <TextView
+            android:id="@+id/ag_location_voltage"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="@string/ag_location_voltlbl"

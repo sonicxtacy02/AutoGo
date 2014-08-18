@@ -64,13 +64,35 @@
                 android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
         </activity>
         <activity
-            android:name=".AutoGoLocation"
+        android:name=".AutoGoLocation"
+        android:label="@string/ag_location_title"
+        android:parentActivityName=".MyActivity"
+        android:screenOrientation="portrait">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+        </activity>
+        <activity
+            android:name=".AutoGoLocationFull"
             android:label="@string/ag_location_title"
+            android:parentActivityName=".AutoGoLocation"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+        </activity>
+        <activity
+            android:name=".AutoGoAlerts"
+            android:label="@string/ag_alerts_title"
             android:parentActivityName=".MyActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+        </activity>
+        <activity
+            android:name=".AutoGoSettings"
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
     </application>
 

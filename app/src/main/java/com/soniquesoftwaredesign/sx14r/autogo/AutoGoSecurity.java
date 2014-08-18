@@ -20,6 +20,7 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.view.MenuItem;
         import android.view.View;
         import android.view.View.OnClickListener;
+        import android.view.ViewGroup;
         import android.view.ViewGroup.LayoutParams;
 //import android.widget.Button;
         import android.view.WindowManager;
@@ -39,6 +40,13 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.widget.Toast;
 
 public class AutoGoSecurity extends Activity {
+    public View popupView;
+    public PopupWindow popupWindow;
+
+    public static SharedPreferences prefs;
+    public static SharedPreferences.Editor editor;
+    public static final String PREFERENCES = "AutoGo Preferences";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,22 +54,23 @@ public class AutoGoSecurity extends Activity {
         setContentView(R.layout.ag_security);
         // Show the Up button in the action bar.
         setupActionBar();
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
 
-
-
+        //SetImageArmState();
 
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
-        img.setOnClickListener(new OnClickListener() {
+       /* img.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 switch (v.getId())
                 {
                     case R.id.armStateImg:
-                        if(MyActivity.isArmed==false)
+                        if(prefs.getBoolean("isArmed", false)==false)
                         {
                             ArmVehicle(v);
-                        }else if(MyActivity.isArmed==true)
+                        }else if(prefs.getBoolean("isArmed", false)==true)
                         {
                             UnarmVehicle(v);
                         }
@@ -71,13 +80,17 @@ public class AutoGoSecurity extends Activity {
             }
 
         });
+        */
 
         //set default button states
-        if(MyActivity.isArmed) {
+        if(prefs.getBoolean("isArmed", false)) {
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
             btn.setEnabled(false);
             btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
             btn.setEnabled(true);
+            img = (ImageView) findViewById(R.id.armStateImg);
+            img.setImageResource(R.drawable.armed);
+
 
             img.setImageResource(R.drawable.armed);
         }
@@ -86,10 +99,10 @@ public class AutoGoSecurity extends Activity {
             btn.setEnabled(true);
             btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
             btn.setEnabled(false);
-
+            img = (ImageView) findViewById(R.id.armStateImg);
             img.setImageResource(R.drawable.unarmed);
         }
-        if(MyActivity.isWindowUp){
+        if(prefs.getBoolean("isWindowUp", true)){
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
             btn.setEnabled(false);
             btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsdownbtn);
@@ -101,7 +114,7 @@ public class AutoGoSecurity extends Activity {
             btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsdownbtn);
             btn.setEnabled(false);
         }
-        if(MyActivity.isVehicleDisabled){
+        if(prefs.getBoolean("isVehicleDisabled", false)){
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_restorebtn);
             btn.setEnabled(true);
             btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
@@ -116,11 +129,21 @@ public class AutoGoSecurity extends Activity {
 
         //recall last command
         TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-        tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
+        tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
     }
 
 
-
+    public void SetImageArmState(View v) {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isArmed", false)==false)
+        {
+            ArmVehicle(v);
+        }else if(prefs.getBoolean("isArmed", false)==true)
+        {
+            UnarmVehicle(v);
+        }
+    }
 
 
 
@@ -159,30 +182,30 @@ public class AutoGoSecurity extends Activity {
         String message = "";
         switch (item.getItemId()) {
             case R.id.action_unarm:
-                MyActivity.isArmed = false;
+                //MyActivity.isArmed = false;
                 message = "arm state has been changed to false";
-                MyActivity.editor.putBoolean("isArmed", false).apply();
+                editor.putBoolean("isArmed", false).apply();
 
                 UpdateNotifier();
                 return true;
             case R.id.action_arm:
-                MyActivity.isArmed = true;
+                //MyActivity.isArmed = true;
                 message = "arm state has been changed to true";
-                MyActivity.editor.putBoolean("isArmed", true).apply();
+                editor.putBoolean("isArmed", true).apply();
 
                 UpdateNotifier();
                 return true;
             case R.id.action_start:
-                MyActivity.isStarted = true;
+                //MyActivity.isStarted = true;
                 message = "engine running state has been changed to true";
-                MyActivity.editor.putBoolean("isStarted", true).apply();
+                editor.putBoolean("isStarted", true).apply();
 
                 UpdateNotifier();
                 return true;
             case R.id.action_stop:
-                MyActivity.isStarted = false;
+                //MyActivity.isStarted = false;
                 message = "engine running state has been changed to false";
-                MyActivity.editor.putBoolean("isStarted", false).apply();
+                editor.putBoolean("isStarted", false).apply();
 
                 UpdateNotifier();
                 return true;
@@ -194,8 +217,9 @@ public class AutoGoSecurity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        if(MyActivity.isArmed)
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isArmed", false))
         {
             menu.findItem(R.id.action_arm).setVisible(false);
         }
@@ -203,7 +227,7 @@ public class AutoGoSecurity extends Activity {
         {
             menu.findItem(R.id.action_unarm).setVisible(false);
         }
-        if(MyActivity.isStarted)
+        if(prefs.getBoolean("isStarted", false))
         {
             menu.findItem(R.id.action_start).setVisible(false);
         }
@@ -220,59 +244,64 @@ public class AutoGoSecurity extends Activity {
 
 
 
-    public void ArmVehicle(View view) {
+    public void ArmVehicle(View v) {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
         img.setImageResource(R.drawable.armed);
-        MyActivity.isArmed=true;
-        MyActivity.lastCommand = "ARM";
+        editor.putBoolean("isArmed", true).apply();
+        editor.putString("lastCommand","ARM").apply();
+        editor.putString("lastCommandStamp",DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()) ).apply();
         final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.lock);
         mp1.start();
         SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
         btn.setEnabled(false);
         btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
         btn.setEnabled(true);
-        MyActivity.editor.putBoolean("isArmed", true).apply();
+        editor.putBoolean("isArmed", true).apply();
 
-        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-        tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
+        tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
+        //editor.putString("lastCommand", MyActivity.lastCommand).apply();
 
         UpdateNotifier();
     }
 
-    public void UnarmVehicle(View view){
+    public void UnarmVehicle(View v){
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         ImageView img = (ImageView) findViewById(R.id.armStateImg);
         img.setImageResource(R.drawable.unarmed);
-        MyActivity.isArmed=false;
-        MyActivity.lastCommand = "UNARM";
+        editor.putBoolean("isArmed", false).apply();
+        editor.putString("lastCommand","UNARM").apply();
+        editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
         final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.unlock);
         mp1.start();
         SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_unarmBtn);
         btn.setEnabled(false);
         btn = (SAutoBgButton) findViewById(R.id.ag_security_armBtn);
         btn.setEnabled(true);
-        MyActivity.editor.putBoolean("isArmed", false).apply();
+        editor.putBoolean("isArmed", false).apply();
 
-        MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-        tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-        MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-        MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+        tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
 
         UpdateNotifier();
     }
 
     public void WindowsUp(View view){
-        if(MyActivity.isWindowUp==false) {
-            MyActivity.isWindowUp=true;
-            MyActivity.lastCommand = "WINDOWUP";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isWindowUp", true)==false) {
+            editor.putBoolean("isWindowUp",true).apply();
+            editor.putString("lastCommand","WINDOWUP").apply();
+            editor.putString("lastCommandStamp", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
+            //MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
             TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
-            MyActivity.editor.putBoolean("isWindowUp", true).apply();
+            tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
+            //editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            editor.putBoolean("isWindowUp", true).apply();
 
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
             btn.setEnabled(false);
@@ -282,15 +311,17 @@ public class AutoGoSecurity extends Activity {
     }
 
     public void WindowsDown(View view){
-        if(MyActivity.isWindowUp) {
-            MyActivity.isWindowUp=false;
-            MyActivity.lastCommand = "WINDOWDOWN";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isWindowUp", true)) {
+            editor.putBoolean("isWindowUp",false).apply();
+            editor.putString("lastCommand","WINDOWDOWN").apply();
+            editor.putString("lastCommandStamp",DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
             TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
-            MyActivity.editor.putBoolean("isWindowUp", false).apply();
+            tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
+            //editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            //editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            editor.putBoolean("isWindowUp", false).apply();
 
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_windowsupbtn);
             btn.setEnabled(true);
@@ -300,31 +331,479 @@ public class AutoGoSecurity extends Activity {
     }
 
     public void DisplaySecurityPanel(View view){
+
+        MyActivity.pinPanel_1.equals("");
+        MyActivity.pinPanel_2.equals("");
+        MyActivity.pinPanel_3.equals("");
+        MyActivity.pinPanel_4.equals("");
+
         LayoutInflater layoutInflater
                 = (LayoutInflater)getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = layoutInflater.inflate(R.layout.ag_pin_panel, null);
-        final PopupWindow popupWindow = new PopupWindow(
+        popupView = layoutInflater.inflate(R.layout.ag_pin_panel, null );
+        popupWindow = new PopupWindow(
                 popupView,
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
+        popupWindow.setAnimationStyle(R.style.PopupWindowAnimation);
 
         //Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
         //btnDismiss.setOnClickListener(new Button.OnClickListener()
-
+        //setContentView(R.layout.ag_pin_panel);
         popupWindow.showAtLocation(view, Gravity.TOP, 0,200);
+
+    }
+
+    public void PinPanel_0(View view)
+    {
+
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "0";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "0";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "0";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "0";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_1(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "1";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "1";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "1";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "1";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_2(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "2";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "2";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "2";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "2";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_3(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "3";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "3";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "3";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "3";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_4(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "4";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "4";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "4";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "4";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_5(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "5";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "5";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "5";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "5";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_6(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "6";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "6";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "6";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "6";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_7(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "7";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "7";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "7";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "7";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_8(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "8";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "8";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "8";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "8";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_9(View view)
+    {
+        if(MyActivity.pinPanel_1.equals(""))
+        {
+            //all 4 pin chars are blank, enter the value
+            MyActivity.pinPanel_1= "9";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("*");
+        }else if (MyActivity.pinPanel_2.equals(""))
+        {
+            MyActivity.pinPanel_2= "9";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_3.equals(""))
+        {
+            MyActivity.pinPanel_3= "9";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("*");
+        }
+        else if (MyActivity.pinPanel_4.equals(""))
+        {
+            MyActivity.pinPanel_4= "9";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("*");
+        }
+        else
+        {
+            //all four are entered do nothing
+        }
+    }
+
+    public void PinPanel_Clr(View view)
+    {
+        MyActivity.pinPanel_1 = "";
+        MyActivity.pinPanel_2 = "";
+        MyActivity.pinPanel_3 = "";
+        MyActivity.pinPanel_4 = "";
+        TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+        tv.setText("");
+        tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+        tv.setText("");
+        tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+        tv.setText("");
+        tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+        tv.setText("");
+
+    }
+
+    public void PinPanel_Enter(View view)
+    {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(!MyActivity.pinPanel_1.equals("") && !MyActivity.pinPanel_2.equals("") && !MyActivity.pinPanel_3.equals("")&& !MyActivity.pinPanel_4.equals("")){
+            String tryPin = MyActivity.pinPanel_1 + MyActivity.pinPanel_2 + MyActivity.pinPanel_3 + MyActivity.pinPanel_4;
+            if (tryPin.equals(prefs.getString("userPin", "0000"))){
+                Toast.makeText(getApplicationContext(),
+                        "Code entered successfully.  Action started.", Toast.LENGTH_LONG)
+                        .show();
+                ShutdownVehicle(view);
+                MyActivity.pinPanel_1 = "";
+                MyActivity.pinPanel_2 = "";
+                MyActivity.pinPanel_3 = "";
+                MyActivity.pinPanel_4 = "";
+                TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+                tv.setText("");
+                tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+                tv.setText("");
+                tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+                tv.setText("");
+                tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+                tv.setText("");
+                popupWindow.dismiss();
+
+                SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
+                btn.setEnabled(false);
+                btn = (SAutoBgButton) findViewById(R.id.ag_security_restorebtn);
+                btn.setEnabled(true);
+
+                editor.putBoolean("isVehicleDisabled", true).apply();
+                editor.putString("lastCommand","SHUTDOWN").apply();
+                editor.putString("lastCommandStamp",DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
+                tv = (TextView) findViewById(R.id.lastCommandAndStamp);
+                tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
+                //editor.putString("lastCommand", MyActivity.lastCommand).apply();
+                //editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+                //editor.putBoolean("isVehicleDisabled", true).apply();
+            }
+            else
+            {
+                //wrong pin
+                Toast.makeText(getApplicationContext(),
+                        "Invalid PIN entry.  Please re-enter.", Toast.LENGTH_LONG)
+                        .show();
+
+                MyActivity.pinPanel_1 = "";
+                MyActivity.pinPanel_2 = "";
+                MyActivity.pinPanel_3 = "";
+                MyActivity.pinPanel_4 = "";
+                TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+                tv.setText("");
+                tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+                tv.setText("");
+                tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+                tv.setText("");
+                tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+                tv.setText("");
+            }
+        }
+        else
+        {
+            //not enough characters in pin
+            Toast.makeText(getApplicationContext(),
+                    "Invalid number of characters.  Please re-enter.", Toast.LENGTH_LONG)
+                    .show();
+
+            MyActivity.pinPanel_1 = "";
+            MyActivity.pinPanel_2 = "";
+            MyActivity.pinPanel_3 = "";
+            MyActivity.pinPanel_4 = "";
+            TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+            tv.setText("");
+            tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+            tv.setText("");
+            tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+            tv.setText("");
+            tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+            tv.setText("");
+        }
+
+    }
+
+    public void PinPanel_Close(View view)
+    {
+        MyActivity.pinPanel_1 = "";
+        MyActivity.pinPanel_2 = "";
+        MyActivity.pinPanel_3 = "";
+        MyActivity.pinPanel_4 = "";
+        TextView tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin1);
+        tv.setText("");
+        tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin2);
+        tv.setText("");
+        tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin3);
+        tv.setText("");
+        tv = (TextView) popupView.findViewById(R.id.ag_pinPanel_pin4);
+        tv.setText("");
+        popupWindow.dismiss();
     }
 
     public void ShutdownVehicle(View view){
-        if(MyActivity.isVehicleDisabled==false) {
-            MyActivity.isVehicleDisabled=true;
-            MyActivity.lastCommand = "SHUTDOWN";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isVehicleDisabled", false)==false) {
+            editor.putBoolean("isVehicleDisabled", true).apply();
+            editor.putString("lastCommand", "SHUTDOWN").apply();
+            editor.putString("lastCommandStamp",DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
             TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
-            MyActivity.editor.putBoolean("isVehicleDisabled", true).apply();
+            tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
+            //editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            //editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            //editor.putBoolean("isVehicleDisabled", true).apply();
 
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
             btn.setEnabled(false);
@@ -334,15 +813,17 @@ public class AutoGoSecurity extends Activity {
     }
 
     public void RestoreVehicle(View view){
-        if(MyActivity.isVehicleDisabled==true) {
-            MyActivity.isVehicleDisabled=false;
-            MyActivity.lastCommand = "RESTORE";
-            MyActivity.lastCommandStamp = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        if(prefs.getBoolean("isVehicleDisabled", false)==true) {
+            editor.putBoolean("isVehicleDisabled",false).apply();
+            editor.putString("lastCommand","RESTORE").apply();
+            editor.putString("lastCommandStamp",DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())).apply();
             TextView tv = (TextView) findViewById(R.id.lastCommandAndStamp);
-            tv.setText(MyActivity.lastCommand + " " + "@ " + MyActivity.lastCommandStamp);
-            MyActivity.editor.putString("lastCommand", MyActivity.lastCommand).apply();
-            MyActivity.editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
-            MyActivity.editor.putBoolean("isVehicleDisabled", false).apply();
+            tv.setText(prefs.getString("lastCommand", "NULL") + " " + "@ " + prefs.getString("lastCommandStamp", "NULL"));
+            //editor.putString("lastCommand", MyActivity.lastCommand).apply();
+            //editor.putString("lastCommandStamp", MyActivity.lastCommandStamp).apply();
+            //editor.putBoolean("isVehicleDisabled", false).apply();
 
             SAutoBgButton btn = (SAutoBgButton) findViewById(R.id.ag_security_shutdownbtn);
             btn.setEnabled(true);
@@ -352,6 +833,8 @@ public class AutoGoSecurity extends Activity {
     }
 
     public void UpdateNotifier(){
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         int icon = R.drawable.ic_launcher;
         long when = System.currentTimeMillis();
         Notification notification = new Notification(icon, getResources().getString(R.string.app_name), when);
@@ -361,7 +844,7 @@ public class AutoGoSecurity extends Activity {
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.ag_custom_notification);
         contentView.setImageViewResource(R.id.ag_notification_icon, R.drawable.ic_launcher);
         contentView.setTextViewText(R.id.ag_notification_title, getResources().getString(R.string.app_name));
-        if(MyActivity.isStarted==true)
+        if(prefs.getBoolean("isStarted", false)==true)
         {
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_start);
         }else
@@ -369,7 +852,7 @@ public class AutoGoSecurity extends Activity {
 
             contentView.setImageViewResource(R.id.ag_notification_startStateImg, R.drawable.ic_stop);
         }
-        if(MyActivity.isArmed==true)
+        if(prefs.getBoolean("isArmed", false)==true)
         {
             contentView.setTextViewText(R.id.text, getResources().getString(R.string.protection_status_message) + " " +  getResources().getString(R.string.protection_state_active) );
             contentView.setImageViewResource(R.id.ag_notification_armStateImg, R.drawable.ic_armed);
@@ -426,7 +909,7 @@ public class AutoGoSecurity extends Activity {
     {
         /*
         try {
-            MyActivity.editor.putString("lastScreen", "security");
+            editor.putString("lastScreen", "security");
 
             Intent intent = new Intent(this, AutoGoSecurity.class);
             startActivity(intent);
@@ -438,8 +921,10 @@ public class AutoGoSecurity extends Activity {
 
     public void goToLocation (View view)
     {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         try {
-            MyActivity.editor.putString("lastScreen", "location").apply();
+            editor.putString("lastScreen", "location").apply();
 
             Intent intent = new Intent(this, AutoGoLocation.class);
             startActivity(intent);
@@ -451,9 +936,11 @@ public class AutoGoSecurity extends Activity {
 
     public void goToControls (View view)
     {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         try
         {
-            MyActivity.editor.putString("lastScreen", "controls").apply();
+            editor.putString("lastScreen", "controls").apply();
 
             Intent intent = new Intent(this, AutoGoControls.class);
             startActivity(intent);
@@ -464,9 +951,44 @@ public class AutoGoSecurity extends Activity {
 
 
     public void goToAlerts(View view) {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
+        try {
+            editor.putString("lastScreen", "alerts").apply();
+
+            Intent intent = new Intent(this, AutoGoAlerts.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void goToSettings(View view) {
+        Intent intent = new Intent(this, AutoGoSettings.class);
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if(MyActivity.backPressed)
+        {
+            //System.exit(0);
+            //finish();
+            int pid = android.os.Process.myPid();
+            android.os.Process.killProcess(pid);
+            System.exit(0);
+        }
+        else
+        {
+            //warning
+            Toast.makeText(getApplicationContext(),
+                    "Press Back button again to exit AutoGo", Toast.LENGTH_LONG)
+                    .show();
+            MyActivity.backPressed = true;
+            BackButtonTimer counter = new BackButtonTimer(3000,1000);
+            counter.start();
+        }
     }
 
 

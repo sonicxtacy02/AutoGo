@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
+    <PreferenceCategory
+        android:title="AutoGo Master Settings">
+
+    <EditTextPreference
+        android:key="userName"
+        android:title="Username"
+        android:summary="Enter your username (required)"
+        android:dialogTitle="Enter your username" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="AutoGo Security Settings">
+
+        <EditTextPreference
+            android:key="userPin"
+            android:title="Security PIN"
+            android:summary="Enter your security PIN"
+            android:dialogTitle="Enter your PIN" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+            android:title="AutoGo Location Settings">
+
+        <ListPreference
+            android:key="locationUpdateInterval"
+            android:title="Location Update Interval"
+            android:summary="Choose your preferred interval"
+            android:entries="@array/entries_location_update_interval"
+            android:entryValues="@array/entryvalues_location_update_interval"
+            android:dialogTitle="Update Interval"
+            android:defaultValue="30000"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>
