@@ -37,6 +37,7 @@
         android:layout_marginTop="95dp"
         android:id="@+id/ag_alerts_alertImg"
         android:src="@drawable/ag_alerts_ok"
+        android:onClick="clearAlertCondition"
 
 
         />

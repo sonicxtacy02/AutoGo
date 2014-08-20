@@ -86,5 +86,8 @@
     <string name="ag_createpin_enterPinMessage">Enter your 4-digit security PIN</string>
     <string name="ag_alerts_recentAlerts">Recent Alerts</string>
     <string name="ag_alerts_pressToClearLbl">(Press To Clear)</string>
+    <string name="ag_alert_notify_bump">Bump Alert</string>
+    <string name="ag_alert_notify_unknown">Unknown Alert</string>
+    <string name="bump_alert">Bump Alert</string>
 
 </resources>

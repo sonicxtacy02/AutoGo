@@ -186,6 +186,8 @@ public class AutoGoLocation extends Activity {
     }
 
     private void initializeMap() {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         if (googleMap == null) {
             googleMap = ((MapFragment) getFragmentManager().findFragmentById(
                     R.id.map)).getMap();
@@ -237,8 +239,18 @@ public class AutoGoLocation extends Activity {
         }
 
         TextView tv = new TextView(AutoGoLocation.this);
-        tv=(TextView)findViewById(R.id.ag_location_speed);
-        tv.setText(String.valueOf(Math.round(onBoardSpeed)) + " mph");
+        if(prefs.getString("speedType", "ms").equals("ms")) {
+            tv=(TextView)findViewById(R.id.ag_location_speed);
+            tv.setText(String.valueOf(Math.round(onBoardSpeed)) + " m/s");
+        }else if (prefs.getString("speedType", "ms").equals("mph"))
+        {
+            tv=(TextView)findViewById(R.id.ag_location_speed);
+            tv.setText(String.valueOf(Math.round(onBoardSpeed * 2.2369362920544) ) + " mph");
+        }else if (prefs.getString("speedType", "ms").equals("kmh"))
+        {
+            tv=(TextView)findViewById(R.id.ag_location_speed);
+            tv.setText(String.valueOf(Math.round(onBoardSpeed * 3.6) ) + " kmh");
+        }
 
         tv=(TextView)findViewById(R.id.ag_location_altitude);
         tv.setText(String.valueOf(Math.round(onBoardAltitude)) + " ft");
@@ -311,6 +323,8 @@ public class AutoGoLocation extends Activity {
 
     public void GetDistanceDifference()
     {
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        editor = prefs.edit();
         //get distance difference based on sent location
         // create class object
         deviceGPS = new GPSTracker(AutoGoLocation.this);
@@ -341,11 +355,20 @@ public class AutoGoLocation extends Activity {
             float distance = vehicleLocation.distanceTo(deviceLocation);
 
             //convert meters to miles
-            DecimalFormat dec = new DecimalFormat("###.##");
-            distance = ((float) (distance /1609.344));
-            TextView distanceAway = new TextView(AutoGoLocation.this);
-            distanceAway=(TextView)findViewById(R.id.ag_location_distanceAway);
-            distanceAway.setText(dec.format(distance) + " Miles Away");
+            if(prefs.getString("distanceType", "meters").equals("meters")) {
+                DecimalFormat dec = new DecimalFormat("###.##");
+                TextView distanceAway = new TextView(AutoGoLocation.this);
+                distanceAway=(TextView)findViewById(R.id.ag_location_distanceAway);
+                distanceAway.setText(dec.format(distance) + " Meters Away");
+            }
+            else if(prefs.getString("distanceType", "miles").equals("miles")) {
+
+                DecimalFormat dec = new DecimalFormat("###.##");
+                distance = ((float) (distance / 1609.344));
+                TextView distanceAway = new TextView(AutoGoLocation.this);
+                distanceAway = (TextView) findViewById(R.id.ag_location_distanceAway);
+                distanceAway.setText(dec.format(distance) + " Miles Away");
+            }
         }
     }
 
@@ -385,7 +408,7 @@ public class AutoGoLocation extends Activity {
         //Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
         //btnDismiss.setOnClickListener(new Button.OnClickListener()
         //setContentView(R.layout.ag_pin_panel);
-        popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, 0,390);
+        popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, 0, 390);
     }
 
     public void DismissMapOptions(View v)
@@ -450,6 +473,7 @@ public class AutoGoLocation extends Activity {
             MyActivity.editor.putString("lastScreen", "alerts").apply();
 
             Intent intent = new Intent(this, AutoGoAlerts.class);
+            intent.putExtra("fromNotify", false);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

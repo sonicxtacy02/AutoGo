@@ -10,6 +10,8 @@
         android:title="Username"
         android:summary="Enter your username (required)"
         android:dialogTitle="Enter your username" />
+
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -28,13 +30,50 @@
             android:title="AutoGo Location Settings">
 
         <ListPreference
-            android:key="locationUpdateInterval"
-            android:title="Location Update Interval"
-            android:summary="Choose your preferred interval"
-            android:entries="@array/entries_location_update_interval"
-            android:entryValues="@array/entryvalues_location_update_interval"
-            android:dialogTitle="Update Interval"
-            android:defaultValue="30000"/>
+        android:key="locationUpdateInterval"
+        android:title="Location Update Interval"
+        android:summary="Choose your preferred interval"
+        android:entries="@array/entries_location_update_interval"
+        android:entryValues="@array/entryvalues_location_update_interval"
+        android:dialogTitle="Update Interval"
+        android:defaultValue="30000"/>
+
+        <ListPreference
+            android:key="speedType"
+            android:title="Speed Measurement"
+            android:summary="Choose your preferred measurement"
+            android:entries="@array/entries_speed_locale"
+            android:entryValues="@array/entryvalues_speed_locale"
+            android:dialogTitle="Update Measurement"
+            android:defaultValue="ms"/>
+
+        <ListPreference
+            android:key="distanceType"
+            android:title="Distance Measurement"
+            android:summary="Choose your preferred measurement"
+            android:entries="@array/entries_distance_locale"
+            android:entryValues="@array/entryvalues_distance_locale"
+            android:dialogTitle="Update Measurement"
+            android:defaultValue="meters"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="AutoGo Alert Settings">
+
+        <ListPreference
+            android:key="alertHistoryLimit"
+            android:title="Alert History Item List Limit"
+            android:summary="Choose your preferred limit"
+            android:entries="@array/entries_alert_history_limit"
+            android:entryValues="@array/entryvalues_alert_history_limit"
+            android:dialogTitle="Item Limit"
+            android:defaultValue="25"/>
+
+        <RingtonePreference android:showDefault="true"
+            android:key="alertAudio" android:title="Alert Notification Sound"
+            android:summary="Choose your notification sound"
+            android:ringtoneType="notification">
+        </RingtonePreference>
 
     </PreferenceCategory>
 </PreferenceScreen>

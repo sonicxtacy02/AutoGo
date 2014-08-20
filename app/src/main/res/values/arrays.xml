@@ -17,6 +17,42 @@
         <item>300000</item>
     </string-array>
 
+    <string-array name="entries_alert_history_limit">
+        <item>10</item>
+        <item>25</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="entryvalues_alert_history_limit">
+        <item>10</item>
+        <item>25</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="entries_speed_locale">
+        <item>Meters Per Second</item>
+        <item>Miles Per Hour</item>
+        <item>Kilometers Per Hour</item>
+    </string-array>
+
+    <string-array name="entryvalues_speed_locale">
+        <item>ms</item>
+        <item>mph</item>
+        <item>kmh</item>
+    </string-array>
+
+    <string-array name="entries_distance_locale">
+        <item>Meters</item>
+        <item>Miles</item>
+    </string-array>
+
+    <string-array name="entryvalues_distance_locale">
+        <item>meters</item>
+        <item>miles</item>
+    </string-array>
+
 
     <string-array name="empty_array"></string-array>
 

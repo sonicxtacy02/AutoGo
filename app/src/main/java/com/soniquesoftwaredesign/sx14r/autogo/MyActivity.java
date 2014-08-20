@@ -85,9 +85,6 @@ public class MyActivity extends Activity {
         SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         editor = prefs.edit();
 
-
-
-
         //editor.putString("userName", "sonicxtacy02").apply();
 
 
@@ -201,6 +198,7 @@ public class MyActivity extends Activity {
             }catch (Exception e) {
                 Log.e(TAG,e.getLocalizedMessage());
             }
+            startService();
         }
     }
 
@@ -967,6 +965,7 @@ public class MyActivity extends Activity {
             editor.putString("lastScreen", "alerts").apply();
 
             Intent intent = new Intent(this, AutoGoAlerts.class);
+            intent.putExtra("fromNotify", false);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -992,6 +991,14 @@ public class MyActivity extends Activity {
             BackButtonTimer counter = new BackButtonTimer(3000,1000);
             counter.start();
         }
+    }
+
+    public void startService() {
+        startService(new Intent(this, AutoGoAlertNotify.class));
+    }
+
+    public void stopService() {
+        stopService(new Intent(this, AutoGoAlertNotify.class));
     }
 
 }

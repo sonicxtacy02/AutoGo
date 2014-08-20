@@ -957,6 +957,7 @@ public class AutoGoSecurity extends Activity {
             editor.putString("lastScreen", "alerts").apply();
 
             Intent intent = new Intent(this, AutoGoAlerts.class);
+            intent.putExtra("fromNotify", false);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
