@@ -21,6 +21,10 @@
     <receiver android:name="AutoGoArmStateNotification" />
     <receiver android:name="AutoGoStartStateNotification" />
 
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="17" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -52,7 +56,7 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+                android:value="com.soniquesoftwaredesign.sx14r.autogo.MyActivity" />
         </activity>
         <activity
             android:name=".AutoGoControls"
@@ -61,7 +65,7 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+                android:value="com.soniquesoftwaredesign.sx14r.autogo.MyActivity" />
         </activity>
         <activity
         android:name=".AutoGoLocation"
@@ -70,7 +74,7 @@
         android:screenOrientation="portrait">
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+            android:value="com.soniquesoftwaredesign.sx14r.autogo.MyActivity" />
         </activity>
         <activity
             android:name=".AutoGoLocationFull"
@@ -79,7 +83,7 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+                android:value="com.soniquesoftwaredesign.sx14r.autogo.MyActivity" />
         </activity>
         <activity
             android:name=".AutoGoAlerts"
@@ -88,7 +92,7 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.soniquesoftwaredesign.sx14r.MyActivity" />
+                android:value="com.soniquesoftwaredesign.sx14r.autogo.MyActivity" />
         </activity>
         <activity
             android:name=".AutoGoSettings"

@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -67,6 +68,7 @@ public class AutoGoAlerts extends Activity {
     private static final String PREFERENCES = "AutoGo Preferences";
     public String alertType;
     private static final String TAG = "AlertActivity";
+    public static Boolean backPressed = false;
 
     ArrayList<String> alertDateArrList = new ArrayList<String>();
     ArrayList<String> alertTypeArrList = new ArrayList<String>();
@@ -647,6 +649,31 @@ public class AutoGoAlerts extends Activity {
             }
 
         });*/
+    }
+
+    public class BackButtonTimer extends CountDownTimer
+    {
+
+        public BackButtonTimer(long startTime, long interval)
+        {
+            super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            //text.setText("Time's up!");
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(startTime));
+            backPressed = false;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+            //text.setText("Time remain:" + millisUntilFinished);
+            //timeElapsed = startTime - millisUntilFinished;
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(timeElapsed));
+        }
     }
 
 }

@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
+
 import java.text.DateFormat;
 import java.util.Calendar;
 
@@ -76,6 +77,7 @@ public class MyActivity extends Activity {
     public PopupWindow popupWindow;
 
     public static Boolean backPressed = false;
+    //private BackButtonTimer countDownTimer;
 
 
     @Override
@@ -999,6 +1001,31 @@ public class MyActivity extends Activity {
 
     public void stopService() {
         stopService(new Intent(this, AutoGoAlertNotify.class));
+    }
+
+    public class BackButtonTimer extends CountDownTimer
+    {
+
+        public BackButtonTimer(long startTime, long interval)
+        {
+            super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            //text.setText("Time's up!");
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(startTime));
+            backPressed = false;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+            //text.setText("Time remain:" + millisUntilFinished);
+            //timeElapsed = startTime - millisUntilFinished;
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(timeElapsed));
+        }
     }
 
 }

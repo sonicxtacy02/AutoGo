@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.os.CountDownTimer;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -90,6 +91,7 @@ public class AutoGoLocation extends Activity {
 
     public View popupView;
     public PopupWindow popupWindow;
+    public static Boolean backPressed = false;
 
 
 
@@ -509,6 +511,31 @@ public class AutoGoLocation extends Activity {
 
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+
+    public class BackButtonTimer extends CountDownTimer
+    {
+
+        public BackButtonTimer(long startTime, long interval)
+        {
+            super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            //text.setText("Time's up!");
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(startTime));
+            backPressed = false;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+            //text.setText("Time remain:" + millisUntilFinished);
+            //timeElapsed = startTime - millisUntilFinished;
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(timeElapsed));
         }
     }
 

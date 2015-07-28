@@ -14,6 +14,7 @@ package com.soniquesoftwaredesign.sx14r.autogo;
         import android.app.Notification;
         import android.app.NotificationManager;
         import android.app.PendingIntent;
+        import android.os.CountDownTimer;
         import android.view.Menu;
         import android.view.MenuInflater;
         import android.view.MenuItem;
@@ -42,6 +43,7 @@ public class AutoGoControls extends Activity {
     public static SharedPreferences prefs;
     public static SharedPreferences.Editor editor;
     private static final String PREFERENCES = "AutoGo Preferences";
+    public static Boolean backPressed = false;
 
 
     @Override
@@ -694,6 +696,33 @@ public class AutoGoControls extends Activity {
             counter.start();
         }
     }
+
+    public class BackButtonTimer extends CountDownTimer
+    {
+
+        public BackButtonTimer(long startTime, long interval)
+        {
+            super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            //text.setText("Time's up!");
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(startTime));
+            backPressed = false;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+            //text.setText("Time remain:" + millisUntilFinished);
+            //timeElapsed = startTime - millisUntilFinished;
+            //timeElapsedView.setText("Time Elapsed: " + String.valueOf(timeElapsed));
+        }
+    }
+
+
 
 
 }
