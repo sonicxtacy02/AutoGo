@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ag_pin_entry">
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="300dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_close"
+        android:onClick="PinPanel_close"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="310dp"
+        android:layout_marginLeft="18dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num1"
+        android:onClick="PinPanel_1"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="310dp"
+        android:layout_marginLeft="134dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num2"
+        android:onClick="PinPanel_2"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="310dp"
+        android:layout_marginLeft="254dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num3"
+        android:onClick="PinPanel_3"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="390dp"
+        android:layout_marginLeft="18dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num4"
+        android:onClick="PinPanel_4"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="390dp"
+        android:layout_marginLeft="134dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num5"
+        android:onClick="PinPanel_5"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="390dp"
+        android:layout_marginLeft="254dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num6"
+        android:onClick="PinPanel_6"/>
+
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="470dp"
+        android:layout_marginLeft="18dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num7"
+        android:onClick="PinPanel_7"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="470dp"
+        android:layout_marginLeft="134dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num8"
+        android:onClick="PinPanel_8"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="470dp"
+        android:layout_marginLeft="254dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num9"
+        android:onClick="PinPanel_9"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginLeft="18dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_clear"
+        android:onClick="PinPanel_Clr"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginLeft="134dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_num0"
+        android:onClick="PinPanel_0"/>
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginLeft="254dp"
+        android:background="@android:drawable/btn_default_small"
+        android:alpha="0"
+        android:id="@+id/ag_pinPanel_ok"
+        android:paddingBottom="20dp"
+        android:onClick="PinPanel_Enter"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="@string/ag_createpin_enterPinMessage"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="66dp"
+        android:gravity="center"
+        android:id="@+id/ag_createPin_message"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="230dp"
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:id="@+id/ag_pinPanel_pin1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="125dp"
+        android:layout_marginTop="230dp"
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:id="@+id/ag_pinPanel_pin2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="215dp"
+        android:layout_marginTop="230dp"
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:id="@+id/ag_pinPanel_pin3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="305dp"
+        android:layout_marginTop="230dp"
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:id="@+id/ag_pinPanel_pin4"/>
+
+
+</RelativeLayout>
